@@ -75,3 +75,121 @@ button {
 }
 
 button:hover { background-color: #005f9e; }
+
+/* Estilos para los nuevos selectores de texto */
+input[type="color"] {
+    height: 38px;
+    width: 40px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background: transparent;
+}
+
+select {
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+select:focus {
+    outline: none;
+    border-color: #569cd6;
+}
+
+/* Estilos para el botón de eliminar */
+.btn-danger {
+    background-color: #d9534f;
+}
+.btn-danger:hover {
+    background-color: #c9302c;
+}
+
+/* Estilos para el checkbox de sombreado */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    user-select: none; /* Evita que el texto se subraye al hacer clic */
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Estilos para los nuevos botones de proyecto */
+.btn-secondary {
+    background-color: #555;
+}
+.btn-secondary:hover {
+    background-color: #777;
+}
+.divider {
+    width: 2px;
+    background-color: #444;
+    margin: 0 10px;
+}
+
+/* --- ESTILOS DE LA TAZA SIMULADA (CSS MUG) --- */
+.preview-section {
+    margin-top: 40px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.preview-section h3 {
+    color: #569cd6;
+    margin-bottom: 30px;
+}
+
+/* El cuerpo cilíndrico de la taza */
+.css-mug {
+    position: relative;
+    width: 220px;
+    height: 240px;
+    background-color: #ffffff;
+    border-radius: 8px 8px 25px 25px; /* Curva en la base */
+    box-shadow:
+        -15px 0 25px rgba(0,0,0,0.5) inset, /* Sombra interior izquierda */
+        10px 0 15px rgba(255,255,255,0.8) inset, /* Brillo interior derecho */
+        10px 10px 20px rgba(0,0,0,0.6); /* Sombra exterior */
+    margin: 0 auto;
+
+    /* Aquí se inyectará el diseño desde JS */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* El asa de la taza (pseudo-elemento) */
+.css-mug::after {
+    content: '';
+    position: absolute;
+    top: 30px;
+    right: -55px; /* Sale por la derecha */
+    width: 50px;
+    height: 140px;
+    border: 20px solid #ffffff; /* Grosor del asa */
+    border-radius: 0 40px 40px 0;
+    border-left: none;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.4);
+    z-index: -1; /* Se manda por detrás del cuerpo */
+}
+
+/* Una capa extra para darle el brillo curvo a la imagen impresa */
+.mug-highlight {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0.4) 85%, rgba(0,0,0,0.2) 100%);
+    pointer-events: none; /* Para que no interfiera con clics */
+}

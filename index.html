@@ -3,28 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <title>Ctrl+Geek | Editor de Tazas</title>
-    <!-- Importamos Fabric.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
-    <!-- Importamos nuestro CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fira+Code&family=Orbitron&family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <nav class="navbar">
-        <img src="logo.png" alt="Logo de Ctrl+Geek">
+        <img src="logo.png" alt="Logo de Ctrl+Geek" onerror="this.style.display='none'">
         <h1>Ctrl<span>+</span>Geek</h1>
     </nav>
 
     <h2>Editor Interactivo (Tazas 11 oz)</h2>
 
+    <!-- Controles de Archivo y Proyecto -->
     <div class="controls">
-        <input type="file" id="imageLoader" accept="image/*">
+        <input type="file" id="imageLoader" accept="image/*" title="Subir Imagen">
+        <button id="btnBorrar" class="btn-danger">Eliminar Objeto</button>
+
+        <div class="divider"></div> <!-- Divisor visual -->
+
+        <!-- Guardar/Cargar proyecto editable -->
+        <button id="btnGuardarProyecto" class="btn-secondary">Guardar Proyecto</button>
+        <!-- Input oculto para cargar proyecto -->
+        <input type="file" id="projectLoader" accept=".json" style="display: none;">
+        <button id="btnCargarProyecto" class="btn-secondary" onclick="document.getElementById('projectLoader').click()">Cargar Proyecto</button>
+
+        <div class="divider"></div>
         <button id="btnExportar">Exportar para Imprimir</button>
     </div>
 
+    <!-- Controles de Texto -->
+    <div class="controls text-controls">
+        <button id="btnAgregarTexto">Añadir Texto</button>
+        <input type="color" id="textColor" value="#000000" title="Cambiar color del texto">
+        <select id="textFont">
+            <option value="monospace">Consola (Básica)</option>
+            <option value="'Fira Code', monospace">Fira Code (Dev)</option>
+            <option value="'Press Start 2P', cursive">Press Start 2P (Retro/Pixel)</option>
+            <option value="'Orbitron', sans-serif">Orbitron (Hardware/Sci-Fi)</option>
+            <option value="'Bangers', cursive">Bangers (Cómics)</option>
+            <option value="Arial">Arial (Clásica)</option>
+            <option value="Impact">Impact (Memes)</option>
+        </select>
+        <label class="checkbox-label">
+            <input type="checkbox" id="textShadow"> Sombreado
+        </label>
+    </div>
+
+    <!-- Área de Diseño -->
     <canvas id="mugCanvas" width="800" height="350"></canvas>
 
-    <!-- Importamos nuestro JavaScript al final del body -->
+    <!-- NUEVO: Área de Vista Previa -->
+    <div class="preview-section">
+        <h3>Vista Previa del Producto</h3>
+        <div class="css-mug" id="cssMug">
+            <!-- El diseño se proyectará aquí como fondo -->
+            <div class="mug-highlight"></div> <!-- Brillo para simular volumen -->
+        </div>
+    </div>
+
     <script src="main.js"></script>
 </body>
 </html>
