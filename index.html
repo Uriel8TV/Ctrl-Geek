@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Ctrl+Geek | Editor de Tazas</title>
+    <!-- Importamos Fabric.js (2D) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+
+    <!-- Importamos Three.js (3D) y sus controles orbitales -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fira+Code&family=Orbitron&family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -20,15 +26,10 @@
     <div class="controls">
         <input type="file" id="imageLoader" accept="image/*" title="Subir Imagen">
         <button id="btnBorrar" class="btn-danger">Eliminar Objeto</button>
-
-        <div class="divider"></div> <!-- Divisor visual -->
-
-        <!-- Guardar/Cargar proyecto editable -->
+        <div class="divider"></div>
         <button id="btnGuardarProyecto" class="btn-secondary">Guardar Proyecto</button>
-        <!-- Input oculto para cargar proyecto -->
         <input type="file" id="projectLoader" accept=".json" style="display: none;">
         <button id="btnCargarProyecto" class="btn-secondary" onclick="document.getElementById('projectLoader').click()">Cargar Proyecto</button>
-
         <div class="divider"></div>
         <button id="btnExportar">Exportar para Imprimir</button>
     </div>
@@ -51,16 +52,38 @@
         </label>
     </div>
 
-    <!-- Área de Diseño -->
-    <canvas id="mugCanvas" width="800" height="350"></canvas>
-
-    <!-- NUEVO: Área de Vista Previa -->
-    <div class="preview-section">
-        <h3>Vista Previa del Producto</h3>
-        <div class="css-mug" id="cssMug">
-            <!-- El diseño se proyectará aquí como fondo -->
-            <div class="mug-highlight"></div> <!-- Brillo para simular volumen -->
+    <!-- CONTENEDOR CON REGLAS PARA EL LIENZO -->
+    <div class="canvas-wrapper">
+        <!-- Regla Superior (Eje X - Ancho en cm) -->
+        <div class="ruler-top">
+            <span>0 cm</span>
+            <span>5 cm</span>
+            <span>10 cm</span>
+            <span>15 cm</span>
+            <span>21 cm (Área útil)</span>
         </div>
+
+        <div class="canvas-with-left-ruler">
+            <!-- Regla Izquierda (Eje Y - Alto en cm) -->
+            <div class="ruler-left">
+                <span>0 cm</span>
+                <span>4.5 cm</span>
+                <span>9 cm (Alto)</span>
+            </div>
+
+            <!-- Lienzo de Fabric.js -->
+            <canvas id="mugCanvas" width="800" height="350"></canvas>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE VISTA PREVIA (Preparada para 3D con Three.js) -->
+    <div class="preview-section">
+        <h3>Vista Previa Interactiva 3D</h3>
+        <!-- Contenedor donde Three.js montará el renderizador 3D -->
+        <div id="canvas3d-container" class="css-mug">
+            <div class="mug-highlight"></div>
+        </div>
+        <p class="hint-3d">Próximamente: Gira la taza con el cursor</p>
     </div>
 
     <script src="main.js"></script>

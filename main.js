@@ -1,8 +1,16 @@
+// ==========================================
+// CONFIGURACIÓN INICIAL DEL LIENZO (2D)
+// ==========================================
 const canvas = new fabric.Canvas('mugCanvas');
 canvas.preserveObjectStacking = true;
 
-// --- LÓGICA DE IMAGEN ---
+// ==========================================
+// LÓGICA DE IMAGEN (CON BUGFIX)
+// ==========================================
 document.getElementById('imageLoader').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
     const reader = new FileReader();
     reader.onload = function(event) {
         const imgObj = new Image();
@@ -14,13 +22,19 @@ document.getElementById('imageLoader').addEventListener('change', function(e) {
             canvas.add(img);
             canvas.sendToBack(img);
             canvas.setActiveObject(img);
+
+            // FIX: Forzamos el redibujado inmediato
+            canvas.renderAll();
+            actualizarVistaPrevia();
         }
     }
-    reader.readAsDataURL(e.target.files[0]);
+    reader.readAsDataURL(file);
+    e.target.value = ''; // Limpiamos el input
 });
 
-// --- LÓGICA DE ELIMINACIÓN ---
-// Eliminar mediante el botón rojo
+// ==========================================
+// LÓGICA DE ELIMINACIÓN
+// ==========================================
 document.getElementById('btnBorrar').addEventListener('click', function() {
     const objActivo = canvas.getActiveObject();
     if (objActivo) {
@@ -29,11 +43,9 @@ document.getElementById('btnBorrar').addEventListener('click', function() {
     }
 });
 
-// Eliminar mediante el teclado (Suprimir o Retroceso)
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Delete' || e.key === 'Backspace') {
         const objActivo = canvas.getActiveObject();
-        // Validamos que exista un objeto activo y que el usuario NO esté editando texto
         if (objActivo && !objActivo.isEditing) {
             canvas.remove(objActivo);
             canvas.discardActiveObject();
@@ -41,7 +53,9 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// --- LÓGICA DE EXPORTACIÓN ---
+// ==========================================
+// LÓGICA DE EXPORTACIÓN Y PROYECTOS (JSON)
+// ==========================================
 document.getElementById('btnExportar').addEventListener('click', function() {
     canvas.discardActiveObject();
     canvas.renderAll();
@@ -54,7 +68,37 @@ document.getElementById('btnExportar').addEventListener('click', function() {
     document.body.removeChild(link);
 });
 
-// --- LÓGICA DE TEXTO ---
+document.getElementById('btnGuardarProyecto').addEventListener('click', function() {
+    const proyectoJSON = JSON.stringify(canvas.toJSON());
+    const blob = new Blob([proyectoJSON], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'MiDiseno-CtrlGeek.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
+document.getElementById('projectLoader').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const contenidoJSON = event.target.result;
+        canvas.loadFromJSON(contenidoJSON, function() {
+            canvas.renderAll();
+            actualizarVistaPrevia();
+            document.getElementById('projectLoader').value = '';
+        });
+    };
+    reader.readAsText(file);
+});
+
+// ==========================================
+// LÓGICA DE TEXTO
+// ==========================================
 document.getElementById('btnAgregarTexto').addEventListener('click', function() {
     const colorActual = document.getElementById('textColor').value;
     const fuenteActual = document.getElementById('textFont').value;
@@ -67,7 +111,6 @@ document.getElementById('btnAgregarTexto').addEventListener('click', function() 
         fill: colorActual,
         fontSize: 30,
         fontWeight: 'bold',
-        // Si el checkbox está marcado al crear el texto, le pone sombra
         shadow: tieneSombreado ? new fabric.Shadow({
             color: 'rgba(0,0,0,0.8)',
             blur: 4,
@@ -81,7 +124,6 @@ document.getElementById('btnAgregarTexto').addEventListener('click', function() 
     canvas.setActiveObject(textoInteractvo);
 });
 
-// Cambiar color en tiempo real
 document.getElementById('textColor').addEventListener('input', function(e) {
     const objActivo = canvas.getActiveObject();
     if (objActivo && objActivo.type === 'i-text') {
@@ -90,7 +132,6 @@ document.getElementById('textColor').addEventListener('input', function(e) {
     }
 });
 
-// Cambiar tipografía en tiempo real
 document.getElementById('textFont').addEventListener('change', function(e) {
     const objActivo = canvas.getActiveObject();
     if (objActivo && objActivo.type === 'i-text') {
@@ -99,16 +140,12 @@ document.getElementById('textFont').addEventListener('change', function(e) {
     }
 });
 
-// Cambiar sombreado en tiempo real
 document.getElementById('textShadow').addEventListener('change', function(e) {
     const objActivo = canvas.getActiveObject();
     if (objActivo && objActivo.type === 'i-text') {
         if (e.target.checked) {
             objActivo.set('shadow', new fabric.Shadow({
-                color: 'rgba(0,0,0,0.8)',
-                blur: 4,
-                offsetX: 3,
-                offsetY: 3
+                color: 'rgba(0,0,0,0.8)', blur: 4, offsetX: 3, offsetY: 3
             }));
         } else {
             objActivo.set('shadow', null);
@@ -117,24 +154,19 @@ document.getElementById('textShadow').addEventListener('change', function(e) {
     }
 });
 
-// Sincronizar la barra de herramientas al seleccionar un objeto
 function sincronizarControles(e) {
     const objActivo = e.selected[0];
     if (objActivo && objActivo.type === 'i-text') {
         document.getElementById('textColor').value = objActivo.fill;
-        // Ajustamos el valor del select para que coincida con la fuente de Fabric
         const fuenteLimpia = objActivo.fontFamily;
         const selectFuente = document.getElementById('textFont');
 
-        // Buscar la opción correcta en el select
         for (let i = 0; i < selectFuente.options.length; i++) {
             if (selectFuente.options[i].value === fuenteLimpia) {
                 selectFuente.selectedIndex = i;
                 break;
             }
         }
-
-        // Actualizar el checkbox de sombreado
         document.getElementById('textShadow').checked = objActivo.shadow !== null;
     }
 }
@@ -143,71 +175,87 @@ canvas.on('selection:created', sincronizarControles);
 canvas.on('selection:updated', sincronizarControles);
 
 // ==========================================
-// NUEVAS FUNCIONES: VISTA PREVIA Y PROYECTOS
+// MOTOR 3D CON THREE.JS Y VINCULACIÓN
 // ==========================================
+const contenedor3D = document.getElementById('canvas3d-container');
 
-/**
- * VISTA PREVIA EN TIEMPO REAL
- * Convierte el lienzo actual a una imagen y la aplica como fondo
- * a nuestra taza dibujada con CSS.
- */
-function actualizarVistaPrevia() {
-    // Generamos una imagen de baja resolución solo para la vista previa
-    const dataURL = canvas.toDataURL({ format: 'png', multiplier: 0.5 });
-    // Se la asignamos al div de la taza simulada
-    document.getElementById('cssMug').style.backgroundImage = `url(${dataURL})`;
+if (contenedor3D) {
+    contenedor3D.innerHTML = ''; // Limpiamos contenedor
+
+    const escena = new THREE.Scene();
+    const camara = new THREE.PerspectiveCamera(45, contenedor3D.clientWidth / contenedor3D.clientHeight, 0.1, 1000);
+    camara.position.set(0, 1.5, 4.5);
+
+    const renderizador = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderizador.setSize(contenedor3D.clientWidth, contenedor3D.clientHeight);
+    contenedor3D.appendChild(renderizador.domElement);
+
+    const controles = new THREE.OrbitControls(camara, renderizador.domElement);
+    controles.enableZoom = true;
+    controles.enablePan = false;
+    controles.minDistance = 2;
+    controles.maxDistance = 6;
+
+    escena.add(new THREE.AmbientLight(0xffffff, 0.7));
+    const luzDireccional = new THREE.DirectionalLight(0xffffff, 0.6);
+    luzDireccional.position.set(5, 5, 5);
+    escena.add(luzDireccional);
+
+    // Vinculamos el canvas de Fabric.js como textura
+    const lienzoHTML = document.getElementById('mugCanvas');
+    const texturaTaza = new THREE.CanvasTexture(lienzoHTML);
+    texturaTaza.anisotropy = renderizador.capabilities.getMaxAnisotropy();
+
+   // Cilindro (Cuerpo de la taza)
+    const materialCilindro = new THREE.MeshStandardMaterial({
+        map: texturaTaza,
+        roughness: 0.2,
+        metalness: 0.0
+    });
+
+    // Creamos un material extra de color blanco para el interior/tapas
+    const materialTapas = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
+
+    const geometriaCilindro = new THREE.CylinderGeometry(1.2, 1.2, 2.5, 64);
+
+    // Al cilindro le pasamos un arreglo: [Lado, Tapa Superior, Tapa Inferior]
+    const cilindro = new THREE.Mesh(geometriaCilindro, [
+        materialCilindro,
+        materialTapas,
+        materialTapas
+    ]);
+
+    // Asa
+    const materialBlanco = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
+    const geometriaAsa = new THREE.TorusGeometry(0.75, 0.2, 16, 32);
+    const asa = new THREE.Mesh(geometriaAsa, materialBlanco);
+    asa.position.set(1.2, 0, 0);
+
+    const grupoTaza = new THREE.Group();
+    grupoTaza.add(cilindro);
+    grupoTaza.add(asa);
+    grupoTaza.rotation.y = -Math.PI / 4;
+    escena.add(grupoTaza);
+
+    function animar3D() {
+        requestAnimationFrame(animar3D);
+        controles.update();
+        renderizador.render(escena, camara);
+    }
+    animar3D();
+
+    // Exponemos la función de actualización a todo el archivo
+    window.actualizarVistaPrevia = function() {
+        texturaTaza.needsUpdate = true;
+    };
+} else {
+    // Fallback por si el HTML aún no tiene el contenedor 3D
+    window.actualizarVistaPrevia = function() {};
 }
 
-// Escuchamos los eventos del lienzo para actualizar la taza en vivo.
-// Cada vez que un objeto se mueve, se escala, se añade o se modifica el texto:
-canvas.on('object:modified', actualizarVistaPrevia);
-canvas.on('object:added', actualizarVistaPrevia);
-canvas.on('object:removed', actualizarVistaPrevia);
-canvas.on('text:changed', actualizarVistaPrevia);
-canvas.on('selection:cleared', actualizarVistaPrevia);
-
-/**
- * GUARDAR PROYECTO (JSON)
- * Serializa todo el estado del lienzo (objetos, colores, fuentes)
- * en un archivo .json editable.
- */
-document.getElementById('btnGuardarProyecto').addEventListener('click', function() {
-    // 1. Convertimos el canvas a un objeto JSON
-    const proyectoJSON = JSON.stringify(canvas.toJSON());
-
-    // 2. Creamos un archivo Blob con esa información
-    const blob = new Blob([proyectoJSON], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    // 3. Forzamos la descarga
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'MiDiseno-CtrlGeek.json'; // Extensión .json
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-});
-
-/**
- * CARGAR PROYECTO (JSON)
- * Lee un archivo .json subido por el usuario y reconstruye el lienzo.
- */
-document.getElementById('projectLoader').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const contenidoJSON = event.target.result;
-
-        // Cargamos el JSON al canvas
-        canvas.loadFromJSON(contenidoJSON, function() {
-            canvas.renderAll();
-            actualizarVistaPrevia(); // Actualizamos la taza CSS
-
-            // Limpiamos el input por si quiere volver a cargar el mismo archivo
-            document.getElementById('projectLoader').value = '';
-        });
-    };
-    reader.readAsText(file);
-});
+// Eventos que disparan la actualización del modelo 3D
+canvas.on('object:modified', window.actualizarVistaPrevia);
+canvas.on('object:added', window.actualizarVistaPrevia);
+canvas.on('object:removed', window.actualizarVistaPrevia);
+canvas.on('text:changed', window.actualizarVistaPrevia);
+canvas.on('selection:cleared', window.actualizarVistaPrevia);
