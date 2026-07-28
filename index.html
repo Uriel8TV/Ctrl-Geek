@@ -3,97 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Ctrl+Geek | Editor de Tazas</title>
+    <!-- Importamos Fabric.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
-    <style>
-        /* Reseteo básico para que el navbar ocupe todo el ancho sin márgenes blancos */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        /* Diseño Dark Mode */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            padding-top: 100px; /* Espacio para que el navbar no tape el contenido */
-        }
-
-        /* --- ESTILOS DEL NAVBAR --- */
-        .navbar {
-            width: 100%;
-            background-color: #252526;
-            padding: 15px 40px;
-            display: flex;
-            align-items: center;
-            border-bottom: 2px solid #569cd6; /* Acento azul en la parte inferior */
-            position: fixed; /* Mantiene la barra siempre arriba */
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .navbar img {
-            height: 45px; /* Altura ideal para el logo */
-            margin-right: 15px;
-            /* Si tu logo tiene fondo blanco, quítaselo primero con remove.bg para que se vea profesional aquí */
-        }
-
-        .navbar h1 {
-            color: #d4d4d4;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .navbar h1 span {
-            color: #569cd6; /* Resaltamos la palabra Geek o el + */
-        }
-        /* ------------------------- */
-
-        h2 {
-            color: #569cd6;
-            margin-bottom: 20px;
-        }
-
-        .canvas-container {
-            border: 2px dashed #4CAF50;
-            background-color: #ffffff;
-            margin-top: 10px;
-            box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            background: #252526;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #333;
-        }
-
-        input[type="file"] { color: #d4d4d4; }
-
-        button {
-            background-color: #007acc;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        button:hover { background-color: #005f9e; }
-    </style>
+    <!-- Importamos nuestro CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- BARRA DE NAVEGACIÓN -->
     <nav class="navbar">
-        <!-- Asegúrate de tener un archivo llamado logo.png en tu carpeta -->
         <img src="logo.png" alt="Logo de Ctrl+Geek">
         <h1>Ctrl<span>+</span>Geek</h1>
     </nav>
@@ -105,44 +22,9 @@
         <button id="btnExportar">Exportar para Imprimir</button>
     </div>
 
-    <!-- Lienzo -->
     <canvas id="mugCanvas" width="800" height="350"></canvas>
 
-    <script>
-        const canvas = new fabric.Canvas('mugCanvas');
-
-        document.getElementById('imageLoader').addEventListener('change', function(e) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const imgObj = new Image();
-                imgObj.src = event.target.result;
-                imgObj.onload = function() {
-                    const img = new fabric.Image(imgObj);
-                    img.scaleToWidth(300);
-                    canvas.centerObject(img);
-                    canvas.add(img);
-                    canvas.setActiveObject(img);
-                }
-            }
-            reader.readAsDataURL(e.target.files[0]);
-        });
-
-        document.getElementById('btnExportar').addEventListener('click', function() {
-            canvas.discardActiveObject();
-            canvas.renderAll();
-
-            const dataURL = canvas.toDataURL({
-                format: 'png',
-                multiplier: 3
-            });
-
-            const link = document.createElement('a');
-            link.download = 'CtrlGeek-Taza-Print.png';
-            link.href = dataURL;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-    </script>
+    <!-- Importamos nuestro JavaScript al final del body -->
+    <script src="main.js"></script>
 </body>
 </html>
