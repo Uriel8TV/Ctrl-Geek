@@ -2,90 +2,154 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Ctrl+Geek | Editor de Tazas</title>
-    <!-- Importamos Fabric.js (2D) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda | Ctrl+Geek</title>
 
-    <!-- Importamos Three.js (3D) y sus controles orbitales -->
+    <!-- Fuentes de Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fira+Code&family=Orbitron&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="store.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Librerías 3D -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fira+Code&family=Orbitron&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <!-- NUEVO: Enlace a tu propio archivo de estilos para la tienda -->
+    <link rel="stylesheet" href="store.css">
 </head>
 <body>
 
+    <!-- Navegación -->
     <nav class="navbar">
-        <img src="logo.png" alt="Logo de Ctrl+Geek" onerror="this.style.display='none'">
+        <img src="assets/logo.png" alt="Logo de Ctrl+Geek" onerror="this.style.display='none'">
         <h1>Ctrl<span>+</span>Geek</h1>
+        <a href="editor.html" class="btn-crear">✨ crea tu propio diseño</a>
     </nav>
 
-    <h2>Editor Interactivo (Tazas 11 oz)</h2>
-
-    <!-- Controles de Archivo y Proyecto -->
-    <div class="controls">
-        <input type="file" id="imageLoader" accept="image/*" title="Subir Imagen">
-        <button id="btnBorrar" class="btn-danger">Eliminar Objeto</button>
-        <div class="divider"></div>
-        <button id="btnGuardarProyecto" class="btn-secondary">Guardar Proyecto</button>
-        <input type="file" id="projectLoader" accept=".json" style="display: none;">
-        <button id="btnCargarProyecto" class="btn-secondary" onclick="document.getElementById('projectLoader').click()">Cargar Proyecto</button>
-        <div class="divider"></div>
-        <button id="btnExportar">Exportar para Imprimir</button>
+    <!-- Header -->
+    <div class="hero">
+        <h2>Colección Oficial</h2>
+        <p>Tazas premium 11oz. Código, Gaming y Cultura Geek.</p>
     </div>
 
-    <!-- Controles de Texto -->
-    <div class="controls text-controls">
-        <button id="btnAgregarTexto">Añadir Texto</button>
-        <input type="color" id="textColor" value="#000000" title="Cambiar color del texto">
-        <select id="textFont">
-            <option value="monospace">Consola (Básica)</option>
-            <option value="'Fira Code', monospace">Fira Code (Dev)</option>
-            <option value="'Press Start 2P', cursive">Press Start 2P (Retro/Pixel)</option>
-            <option value="'Orbitron', sans-serif">Orbitron (Hardware/Sci-Fi)</option>
-            <option value="'Bangers', cursive">Bangers (Cómics)</option>
-            <option value="Arial">Arial (Clásica)</option>
-            <option value="Impact">Impact (Memes)</option>
-        </select>
-        <label class="checkbox-label">
-            <input type="checkbox" id="textShadow"> Sombreado
-        </label>
-    </div>
+    <!-- Catálogo Principal -->
+    <div class="container">
+        <div class="product-grid">
 
-    <!-- CONTENEDOR CON REGLAS PARA EL LIENZO -->
-    <div class="canvas-wrapper">
-        <!-- Regla Superior (Eje X - Ancho en cm) -->
-        <div class="ruler-top">
-            <span>0 cm</span>
-            <span>5 cm</span>
-            <span>10 cm</span>
-            <span>15 cm</span>
-            <span>21 cm (Área útil)</span>
-        </div>
-
-        <div class="canvas-with-left-ruler">
-            <!-- Regla Izquierda (Eje Y - Alto en cm) -->
-            <div class="ruler-left">
-                <span>0 cm</span>
-                <span>4.5 cm</span>
-                <span>9 cm (Alto)</span>
+            <div class="product-card card-editor-link">
+                <div class="card-editor-icon">✨</div>
+                <div class="product-title" style="margin-top: 15px;">¿Tienes tu propia idea?</div>
+                <p style="color: #aaa; font-size: 14px; margin: 10px 0 20px 0; line-height: 1.4;">Entra a nuestro laboratorio interactivo, sube tus imágenes, añade texto y diseña tu taza en 3D.</p>
+                <a href="editor.html" class="btn-ir-editor">Crea tu propio diseño</a>
             </div>
 
-            <!-- Lienzo de Fabric.js -->
-            <canvas id="mugCanvas" width="800" height="350"></canvas>
+            <div class="product-card">
+                <img src="assets/python-hello.png" class="product-img" alt="Taza Python">
+                <div class="product-title">Taza Dev: Hello World Python</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza Dev: Hello World Python', 'assets/python-hello.png')">Ver en 3D</button>
+            </div>
+
+            <div class="product-card">
+                <img src="assets/git-commit.png" class="product-img" alt="Taza Git">
+                <div class="product-title">Taza Dev: Git Flow</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza Dev: Git Flow', 'assets/git-commit.png')">Ver en 3D</button>
+            </div>
+
+            <div class="product-card">
+                <img src="assets/RE.png" class="product-img" alt="Taza RE-Umbrella">
+                <div class="product-title">Taza RE: Umbrella</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza RE: Umbrella', 'assets/RE.png')">Ver en 3D</button>
+            </div>
+
+            <div class="product-card">
+                <img src="assets/spiderman.png" class="product-img" alt="Taza Symbiote">
+                <div class="product-title">Taza Arachnid: Symbiote Black</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza Arachnid: Symbiote Black', 'assets/spiderman.png')">Ver en 3D</button>
+            </div>
+
+            <div class="product-card">
+                <img src="assets/bridges-logo.png" class="product-img" alt="Taza Bridges">
+                <div class="product-title">Taza Porter: Bridges Inc.</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza Porter: Bridges Inc.', 'assets/bridges-logo.png')">Ver en 3D</button>
+            </div>
+
+            <div class="product-card">
+                <img src="assets/jak2-seal.png" class="product-img" alt="Taza Jak 2">
+                <div class="product-title">Taza Legacy: Jak 2 Seal</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza Legacy: Jak 2 Seal', 'assets/jak2-seal.png')">Ver en 3D</button>
+            </div>
+
+            <div class="product-card">
+                <img src="assets/ratchet_and_clank.png" class="product-img" alt="Taza RYC">
+                <div class="product-title">Taza Rift: Ratchet and Clank</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza Rift: Ratchet and Clank', 'assets/ratchet_and_clank.png')">Ver en 3D</button>
+            </div>
+
+            <div class="product-card">
+                <img src="assets/ps1.png" class="product-img" alt="Taza ps1">
+                <div class="product-title">Taza PS1: Logo de Play 1</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza ps1: Logo de Play 1', 'assets/ps1.png')">Ver en 3D</button>
+            </div>
+
+            <div class="product-card">
+                <img src="assets/xbox.png" class="product-img" alt="Taza xbox">
+                <div class="product-title">Taza logoX: Logo Xbox</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza logoX:logo Xbox', 'assets/xbox.png')">Ver en 3D</button>
+            </div>
+
+            <div class="product-card">
+                <img src="assets/nes.png" class="product-img" alt="Taza nes">
+                <div class="product-title">Taza nes: Logo de nintendo</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza nes: Logo de nintendo', 'assets/nes.png')">Ver en 3D</button>
+            </div>
+
+            <div class="product-card">
+                <img src="assets/play.png" class="product-img" alt="Taza playstation">
+                <div class="product-title">Taza play:Live in your world</div>
+                <div class="product-price">$150 MXN</div>
+                <button class="btn-ver" onclick="abrirModal('Taza play:Live in your world', 'assets/play.png')">Ver en 3D</button>
+            </div>
+
         </div>
     </div>
 
-    <!-- SECCIÓN DE VISTA PREVIA (Preparada para 3D con Three.js) -->
-    <div class="preview-section">
-        <h3>Vista Previa Interactiva 3D</h3>
-        <!-- Contenedor donde Three.js montará el renderizador 3D -->
-        <div id="canvas3d-container" class="css-mug">
-            <div class="mug-highlight"></div>
+    <!-- Modal 3D -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content">
+            <button class="btn-close" onclick="cerrarModal()">×</button>
+
+            <div class="modal-3d-container" id="visor3d">
+                <p style="text-align: center; color: #888; margin-top: 180px;">(Render 3D interactivo próximamente)</p>
+            </div>
+
+            <div class="modal-info">
+                <h2 id="modalTitle" style="color: white; margin-top: 0;">Nombre del Producto</h2>
+                <p style="color: #aaa; line-height: 1.5;">Incluye caja premium negra mate y portavasos de regalo. Impresión de alta durabilidad.</p>
+
+                <label style="color: #569cd6; font-weight: bold; margin-top: 15px; display: block;">Tamaño de la taza:</label>
+                <select id="modalMugSize" style="padding: 10px; background: #1e1e1e; color: white; border: 1px solid #555; border-radius: 4px; width: 100%; margin-top: 5px; margin-bottom: 15px;" onchange="actualizarPrecioModal()">
+                    <option value="11oz">Clásica 11 oz - $150 MXN</option>
+                    <option value="15oz">Jumbo 15 oz - $190 MXN</option>
+                </select>
+
+                <div class="product-price" id="modalPrice" style="font-size: 28px; color: #25D366; font-weight: bold;">$150 MXN</div>
+                <button class="btn-comprar" onclick="comprarDirecto()">Añadir al Carrito / WhatsApp</button>
+            </div>
         </div>
-        <p class="hint-3d">Próximamente: Gira la taza con el cursor</p>
     </div>
 
-    <script src="main.js"></script>
+    <!-- NUEVO: Enlace a tu propio archivo de lógica para la tienda -->
+    <script src="store.js"></script>
 </body>
 </html>

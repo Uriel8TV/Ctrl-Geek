@@ -1,0 +1,22 @@
+{
+  "precios": {
+    "11oz": {
+      "stock": [150, 130, 100],
+      "auto": [150, 120, 100],
+      "express": [200, 170, 150]
+    },
+    "15oz": {
+      "stock": [190, 170, 150],
+      "auto": [190, 160, 140],
+      "express": [240, 210, 190]
+    }
+  },
+  "catalogoEditor": [
+    "assets/python-hello.png",
+    "assets/git-commit.png",
+    "assets/logo-bat.png",
+    "assets/re4-iluminados.png",
+    "assets/bridges-logo.png",
+    "assets/spiderman.png"
+  ]
+}

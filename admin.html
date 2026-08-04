@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración | Ctrl+Geek</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+    <nav class="admin-nav">
+        <h1>Ctrl<span>+</span>Geek 🖥️ <span>Panel de Control</span></h1>
+        <a href="index.html" class="btn-back">🪐 Ir a la Tienda</a>
+    </nav>
+
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <button class="tab-btn active" onclick="switchTab('precios')">💰 Matriz de Precios</button>
+            <button class="tab-btn" onclick="switchTab('catalogo')">📦 Catálogo Estacional</button>
+            <button class="tab-btn" onclick="switchTab('tazas')">📐 Gestor de Tamaños</button>
+            <button class="tab-btn" onclick="switchTab('fuentes')">🔤 Fuentes del Sistema</button>
+        </aside>
+
+        <main class="admin-main">
+
+            <section id="tab-precios" class="admin-section active">
+                <h2>Control de Precios y Escalabilidad</h2>
+                <p class="section-desc">Selecciona un producto y define sus costos según la mano de obra requerida.</p>
+
+                <div class="admin-product-selector">
+                    <label>⚙️ Configurando precios para:</label>
+                    <select id="pricingProductSelect" onchange="cargarPreciosProducto()">
+                        <option value="11oz">☕ Taza Clásica (11 oz)</option>
+                        <option value="15oz">🍺 Taza Jumbo (15 oz)</option>
+                    </select>
+                </div>
+
+                <div class="pricing-tier-card">
+                    <h3>🛒 1. Diseños de Stock (Catálogo Fijo)</h3>
+                    <p class="tier-desc">Venta directa. No requiere tiempo de diseño por tu parte.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Menudeo (1 a 5 pzas):</label>
+                            <input type="number" id="stock_1" value="150">
+                        </div>
+                        <div class="form-group">
+                            <label>Medio Mayoreo (6 a 11 pzas):</label>
+                            <input type="number" id="stock_6" value="130">
+                        </div>
+                        <div class="form-group">
+                            <label>Mayoreo (Caja 12+ pzas):</label>
+                            <input type="number" id="stock_12" value="100">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pricing-tier-card">
+                    <h3>🎨 2. Autoservicio (El cliente diseña)</h3>
+                    <p class="tier-desc">El cliente usa tu plataforma. Solo descargas e imprimes.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Menudeo (1 a 5 pzas):</label>
+                            <input type="number" id="auto_1" value="150">
+                        </div>
+                        <div class="form-group">
+                            <label>Medio Mayoreo (6 a 11 pzas):</label>
+                            <input type="number" id="auto_6" value="120">
+                        </div>
+                        <div class="form-group">
+                            <label>Mayoreo (Caja 12+ pzas):</label>
+                            <input type="number" id="auto_12" value="100">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pricing-tier-card" style="border-color: #569cd6;">
+                    <h3 style="color: #569cd6;">🛠️ 3. Diseño Asistido (Trabajo Manual)</h3>
+                    <p class="tier-desc">El cliente manda instrucciones. Requiere tu tiempo como diseñador.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Menudeo (1 a 5 pzas):</label>
+                            <input type="number" id="express_1" value="200">
+                        </div>
+                        <div class="form-group">
+                            <label>Medio Mayoreo (6 a 11 pzas):</label>
+                            <input type="number" id="express_6" value="170">
+                        </div>
+                        <div class="form-group">
+                            <label>Mayoreo (Caja 12+ pzas):</label>
+                            <input type="number" id="express_12" value="150">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-save" onclick="guardarConfig('precios')">💾 Guardar Matriz de Precios</button>
+            </section>
+
+            <section id="tab-catalogo" class="admin-section">
+                <h2>Gestor de Catálogo Rápido</h2>
+                <p class="section-desc">Sube o elimina diseños del carrusel rápido. Ideal para campañas estacionales (Navidad, Geek Day).</p>
+
+                <div class="upload-zone">
+                    <label class="custom-upload">
+                        ➕ Subir Nuevo Diseño al Catálogo
+                        <input type="file" id="newCatalogImg" accept="image/*" style="display: none;">
+                    </label>
+                    <input type="text" id="catalogTitle" placeholder="Nombre del diseño (Ej: Spidey Navideño)" style="margin-top: 10px; padding: 10px; width: 300px; border-radius: 4px; border: 1px solid #555; background: #1e1e1e; color: white;">
+                </div>
+
+                <h3>Diseños Activos Actualmente</h3>
+                <div class="admin-catalog-grid">
+                    <div class="admin-catalog-item">
+                        <img src="assets/logo-bat.png" alt="Batman">
+                        <span>Batman</span>
+                        <button class="btn-delete-item">❌ Eliminar</button>
+                    </div>
+                    <div class="admin-catalog-item">
+                        <img src="assets/spiderman.png" alt="Spider-Man">
+                        <span>Spider-Man</span>
+                        <button class="btn-delete-item">❌ Eliminar</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-tazas" class="admin-section">
+                <h2>Inyector de Nuevos Modelos</h2>
+                <p class="section-desc">Da de alta nuevas tazas o termos calculando sus dimensiones físicas para el motor 3D.</p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Identificador Único (Ej: termo16oz):</label>
+                        <input type="text" id="mugId" placeholder="termo16oz">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre Comercial:</label>
+                        <input type="text" id="mugName" placeholder="Termo Geek 16 oz">
+                    </div>
+                    <div class="form-group">
+                        <label>Ancho Útil del Lienzo (cm):</label>
+                        <input type="number" id="mugWidthCm" value="24" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Alto Útil del Lienzo (cm):</label>
+                        <input type="number" id="mugHeightCm" value="12" step="0.1">
+                    </div>
+                </div>
+                <button class="btn-save" onclick="guardarConfig('tazas')">🏗️ Dar de Alta Modelo</button>
+            </section>
+
+            <section id="tab-fuentes" class="admin-section">
+                <h2>Biblioteca de Tipografías</h2>
+                <p class="section-desc">Administra las fuentes locales cargadas que tus clientes usan para añadir texto.</p>
+
+                <div class="upload-zone">
+                    <label class="custom-upload">
+                        🔤 Subir Archivo de Fuente (.ttf, .otf)
+                        <input type="file" id="newFontFile" accept=".ttf, .otf" style="display: none;">
+                    </label>
+                </div>
+
+                <h3>Tipografías Disponibles</h3>
+                <ul class="admin-font-list">
+                    <li><span>Fira Code (Defecto)</span> <span class="badge-system">Sistema</span></li>
+                    <li><span>Press Start 2P (Defecto)</span> <span class="badge-system">Sistema</span></li>
+                </ul>
+            </section>
+
+      </main>
+    </div>
+
+    <script src="admin.js"></script>
+
+</body>
+</html>

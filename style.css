@@ -1,15 +1,58 @@
+/* =========================================
+   RESET Y ESTILOS BASE
+   ========================================= */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    padding-top: 100px; /* Espacio para el navbar fijo */
+}
+
+/* =========================================
+   NUEVO LAYOUT: EDITOR PROFESIONAL (2 COLUMNAS)
+   ========================================= */
+.editor-layout {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: flex-start;
+}
+
+/* Columna Izquierda: Lienzos (60%) */
+.workspace-column {
+    flex: 6;
+    background: #1e1e1e;
+    border-radius: 8px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #1e1e1e;
-    color: #d4d4d4;
-    padding-top: 100px;
+    gap: 30px;
 }
 
+/* Columna Derecha: Panel de Herramientas (40%) */
+.tools-column {
+    flex: 4;
+    background: #252526;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* =========================================
+   BARRA DE NAVEGACIÓN
+   ========================================= */
 .navbar {
     width: 100%;
     background-color: #252526;
@@ -18,212 +61,181 @@ body {
     align-items: center;
     border-bottom: 2px solid #569cd6;
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     z-index: 1000;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    justify-content: space-between;
 }
 
-.navbar img {
-    height: 45px;
-    margin-right: 15px;
-}
+.navbar img { height: 45px; margin-right: 15px; }
+.navbar h1 { margin: 0; font-family: 'Fira Code', monospace; color: white; }
+.navbar h1 span { color: #569cd6; }
 
-.navbar h1 {
-    color: #d4d4d4;
-    font-size: 22px;
+.btn-crear {
+    background-color: #569cd6;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
     font-weight: bold;
+    transition: background 0.3s;
 }
+.btn-crear:hover { background-color: #4eb5e6; }
 
-.navbar h1 span {
-    color: #569cd6;
-}
-
-h2 {
-    color: #569cd6;
-    margin-bottom: 20px;
-}
-
-.canvas-container {
-    border: 2px dashed #4CAF50;
-    background-color: #ffffff;
-    margin-top: 10px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
-}
-
+/* =========================================
+   CONTROLES Y BOTONES GENERALES
+   ========================================= */
 .controls {
     display: flex;
     gap: 15px;
-    margin-bottom: 20px;
     background: #252526;
-    padding: 20px;
     border-radius: 8px;
     border: 1px solid #333;
 }
 
 input[type="file"] { color: #d4d4d4; }
 
-button {
+button, .btn-secondary {
     background-color: #007acc;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
+    color: white; border: none;
+    padding: 10px 20px; border-radius: 4px;
+    cursor: pointer; font-weight: bold;
     transition: background 0.3s;
 }
-
 button:hover { background-color: #005f9e; }
 
-/* Estilos para los nuevos selectores de texto */
+.btn-secondary { background-color: #555; }
+.btn-secondary:hover { background-color: #777; }
+
+.btn-danger { background-color: #d9534f; }
+.btn-danger:hover { background-color: #c9302c; }
+
 input[type="color"] {
-    height: 38px;
-    width: 40px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    background: transparent;
+    height: 38px; width: 40px;
+    border: none; border-radius: 4px;
+    cursor: pointer; background: transparent;
 }
 
 select {
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #333;
-    color: white;
-    border: 1px solid #555;
-    cursor: pointer;
+    padding: 10px; border-radius: 4px;
+    background-color: #333; color: white;
+    border: 1px solid #555; cursor: pointer;
     font-family: inherit;
 }
+select:focus { outline: none; border-color: #569cd6; }
 
-select:focus {
-    outline: none;
-    border-color: #569cd6;
-}
-
-/* Estilos para el botón de eliminar */
-.btn-danger {
-    background-color: #d9534f;
-}
-.btn-danger:hover {
-    background-color: #c9302c;
-}
-
-/* Estilos para el checkbox de sombreado */
 .checkbox-label {
+    display: flex; align-items: center;
+    gap: 8px; cursor: pointer;
+    font-size: 14px; font-weight: bold;
+    user-select: none;
+}
+input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+
+/* =========================================
+   CATÁLOGO RÁPIDO (REDISEÑADO)
+   ========================================= */
+.catalog-section {
+    width: 100%; /* Adaptable a la columna derecha */
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.catalog-grid {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    justify-content: flex-start;
+}
+
+.catalog-item {
+    flex: 0 0 80px; /* Tamaño fijo de 80px para evitar que se apachurren */
     cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    user-select: none; /* Evita que el texto se subraye al hacer clic */
+    border: 2px solid transparent;
+    border-radius: 6px;
+    transition: all 0.3s;
 }
 
-input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
+.catalog-item img {
+    width: 80px; height: 80px;
+    object-fit: cover; border-radius: 4px;
 }
+.catalog-item:hover { border-color: #4CAF50; transform: scale(1.05); }
 
-/* Estilos para los nuevos botones de proyecto */
-.btn-secondary {
-    background-color: #555;
-}
-.btn-secondary:hover {
-    background-color: #777;
-}
-.divider {
-    width: 2px;
-    background-color: #444;
-    margin: 0 10px;
-}
-
-/* --- CONTENEDOR PARA EL MOTOR 3D --- */
+/* =========================================
+   ZONA DE VISTA PREVIA 3D
+   ========================================= */
 .preview-section {
-    margin-top: 40px;
-    margin-bottom: 50px;
-    text-align: center;
-}
-
-.preview-section h3 {
-    color: #569cd6;
-    margin-bottom: 10px;
-}
-
-#canvas3d-container {
-    width: 500px;
-    height: 400px;
-    margin: 0 auto;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: #f4f4f9; /* Fondo claro para resaltar la taza blanca */
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
-    cursor: grab; /* Cursor de "agarrar" para indicar que se puede girar */
-}
-
-#canvas3d-container:active {
-    cursor: grabbing;
-}
-
-/* El cuerpo cilíndrico de la taza */
-.css-mug {
-    position: relative;
-    width: 220px;
-    height: 240px;
-    background-color: #ffffff;
-    border-radius: 8px 8px 25px 25px; /* Curva en la base */
-    box-shadow:
-        -15px 0 25px rgba(0,0,0,0.5) inset, /* Sombra interior izquierda */
-        10px 0 15px rgba(255,255,255,0.8) inset, /* Brillo interior derecho */
-        10px 10px 20px rgba(0,0,0,0.6); /* Sombra exterior */
-    margin: 0 auto;
-
-    /* Aquí se inyectará el diseño desde JS */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-/* El asa de la taza (pseudo-elemento) */
-.css-mug::after {
-    content: '';
-    position: absolute;
-    top: 30px;
-    right: -55px; /* Sale por la derecha */
-    width: 50px;
-    height: 140px;
-    border: 20px solid #ffffff; /* Grosor del asa */
-    border-radius: 0 40px 40px 0;
-    border-left: none;
-    box-shadow: 5px 5px 10px rgba(0,0,0,0.4);
-    z-index: -1; /* Se manda por detrás del cuerpo */
-}
-
-/* Una capa extra para darle el brillo curvo a la imagen impresa */
-.mug-highlight {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    border-radius: inherit;
-    background: linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0.4) 85%, rgba(0,0,0,0.2) 100%);
-    pointer-events: none; /* Para que no interfiera con clics */
-}
-
-/* --- ESTILOS DE LAS REGLAS DEL LIENZO --- */
-.canvas-wrapper {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #252526;
-    padding: 15px;
+    margin-top: 20px;
+}
+
+/* ZONA DE VISTA PREVIA 3D ILUMINADA */
+#canvas3d-container {
+    width: 100%;
+    max-width: 400px;
+    height: 350px;
+    position: relative;
+    background-color: #f4f4f9; /* Restaurado a blanco/gris claro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 8px;
-    border: 1px solid #333;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+}
+
+/* RESTAURACIÓN DEL LIENZO 2D BLANCO */
+.canvas-container {
+    background-color: #ffffff;
+    border: 2px dashed #4CAF50;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
     margin-top: 10px;
 }
 
+.hint-3d { font-size: 12px; color: #888; margin-top: 10px; }
+
+/* Placeholder de la taza en CSS (Mientras se integra Three.js) */
+.css-mug {
+    position: relative;
+    width: 200px; height: 220px;
+    background-color: #ffffff;
+    border-radius: 8px 8px 25px 25px;
+    box-shadow: -15px 0 25px rgba(0,0,0,0.5) inset, 10px 0 15px rgba(255,255,255,0.8) inset, 10px 10px 20px rgba(0,0,0,0.6);
+}
+.css-mug::after {
+    content: ''; position: absolute;
+    top: 30px; right: -45px;
+    width: 40px; height: 120px;
+    border: 18px solid #ffffff;
+    border-radius: 0 40px 40px 0; border-left: none;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.4); z-index: -1;
+}
+.mug-highlight {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: inherit; pointer-events: none;
+    background: linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0.4) 85%, rgba(0,0,0,0.2) 100%);
+}
+
+/* =========================================
+   LIENZO 2D Y REGLAS (Mismo tamaño interno)
+   ========================================= */
+.canvas-wrapper {
+    display: flex; flex-direction: column; align-items: center;
+    background-color: #252526; padding: 15px;
+    border-radius: 8px; border: 1px solid #333;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.5); margin-top: 10px;
+    max-width: 100%; overflow-x: auto;
+}
+
 .ruler-top {
-    width: 800px;
+    width: 825px; /* Aumentamos 25px para compensar el nuevo margen derecho */
+    padding-right: 25px; /* Empuja el texto "20 cm" hacia adentro */
     display: flex;
     justify-content: space-between;
     font-size: 11px;
@@ -236,23 +248,147 @@ input[type="checkbox"] {
 .canvas-with-left-ruler {
     display: flex;
     align-items: center;
+    padding-right: 25px; /* Fuerza el espacio visual a la derecha del lienzo */
 }
 
 .ruler-left {
-    height: 350px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-size: 11px;
-    color: #888;
-    padding-right: 8px;
-    border-right: 1px solid #444;
-    margin-right: 5px;
-    text-align: right;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-size: 11px; color: #888; padding-right: 5px;
+    border-right: 1px solid #444; margin-right: 5px; text-align: right;
+}
+.center-mark { color: #4CAF50; font-weight: bold; }
+.center-guide {
+    position: absolute; left: calc(50% + 20px);
+    top: 35px; bottom: 18px; width: 0px;
+    border-left: 2px dashed rgba(76, 175, 80, 0.7); pointer-events: none; z-index: 10;
 }
 
-.hint-3d {
-    font-size: 12px;
-    color: #888;
+/* =========================================
+   CHECKOUT, WHATSAPP Y MODO EXPRÉS
+   ========================================= */
+.checkout-section {
+    position: sticky; bottom: -20px; background: #252526;
+    padding: 15px 0; border-top: 1px solid #444;
+    display: flex; flex-direction: column; gap: 10px; z-index: 10;
+}
+
+.express-ui {
+    display: none; flex-direction: column; gap: 15px;
+    background: #2a2d2e; padding: 20px; border-radius: 8px;
+    border: 1px dashed #569cd6; text-align: center;
+}
+.express-ui textarea {
+    width: 100%; height: 100px; background: #1e1e1e;
+    color: white; border: 1px solid #444; border-radius: 4px;
+    padding: 10px; resize: none; font-family: inherit; box-sizing: border-box;
+}
+
+.btn-whatsapp { background-color: #25D366; color: white; font-weight: bold; }
+.btn-whatsapp:hover { background-color: #128C7E; }
+
+/* =========================================
+   ESTILOS DEL PROTOCOLO DE CO-CREACIÓN
+   ========================================= */
+.co-creator-protocol {
+    background: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 15px;
     margin-top: 10px;
+    text-align: left;
+    box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
+}
+
+.co-creator-protocol h4 {
+    color: #569cd6;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.protocol-subtitle {
+    color: #ce9178; /* Naranja/Texto de string en editores de código */
+    font-style: italic;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.protocol-steps p {
+    font-size: 11px;
+    color: #d4d4d4;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.protocol-steps p span {
+    color: #25D366;
+    font-weight: bold;
+}
+
+.protocol-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #444;
+    font-size: 12px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.protocol-checkbox input {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+/* =========================================
+   DISEÑO RESPONSIVO (MÓVILES Y TABLETS)
+   ========================================= */
+@media (max-width: 992px) {
+    /* 1. Cambiamos el diseño a una sola columna */
+    .editor-container {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    /* 2. El área de trabajo y las herramientas toman el 100% del ancho */
+    .workspace, .tools-panel {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    /* 3. Protegemos el lienzo (Canvas) para que no rompa la pantalla */
+    /* Le damos scroll horizontal para que el cliente pueda moverse por su diseño
+       sin que la página entera se descuadre */
+    .canvas-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding-bottom: 10px;
+    }
+
+    /* 4. Ajustamos el Visor 3D para que quepa perfecto arriba del lienzo */
+    .viewer-3d {
+        width: 100%;
+        height: 300px; /* Un poco más bajo para ahorrar espacio en la pantalla */
+        margin-bottom: 15px;
+    }
+
+    /* 5. Ajustes de tipografía y botones para los dedos (Touch targets) */
+    .btn-primary, .btn-secondary, .btn-whatsapp {
+        width: 100%; /* Botones de lado a lado para fácil toque */
+        padding: 15px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        font-size: 24px;
+        text-align: center;
+    }
 }
