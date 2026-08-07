@@ -2,7 +2,7 @@
 // VARIABLES GLOBALES Y CARGA DE DATOS (JSON)
 // ==========================================
 let datosPlataforma = null;
-let currentModalImage = '';
+let currentModalImage = ''; // Declarada UNA SOLA VEZ
 
 // Función para leer el cerebro JSON
 async function cargarDatosMaestros() {
@@ -21,7 +21,6 @@ cargarDatosMaestros();
 // ==========================================
 // MOTOR 3D
 // ==========================================
-// Variables globales para el motor 3D
 let escena, camara, renderizador, grupoTaza, animacionID;
 
 // 1. FUNCIÓN PARA CREAR EL ESCENARIO
@@ -52,10 +51,7 @@ function inicializar3D(contenedor) {
     escena.add(luzAtras);
 }
 
-// Variable global para recordar qué diseño se está viendo y poder cambiar de taza sin perderlo
-let currentModalImage = '';
-
-// 2. FUNCIÓN PARA MOLDEAR LA TAZA Y APLICAR LA IMAGEN (AHORA MULTITAMAÑO)
+// 2. FUNCIÓN PARA MOLDEAR LA TAZA Y APLICAR LA IMAGEN
 function construirTaza(imagenSrc, size = '11oz') {
     if (grupoTaza) escena.remove(grupoTaza);
     grupoTaza = new THREE.Group();
@@ -75,7 +71,6 @@ function construirTaza(imagenSrc, size = '11oz') {
     asa.position.set(r, 0, 0);
 
     const canvasVirtual = document.createElement('canvas');
-    // Dimensiones del lienzo virtual que empatan con tu configTazas del editor
     canvasVirtual.width = size === '15oz' ? 920 : 800;
     canvasVirtual.height = size === '15oz' ? 400 : 376;
     const ctx = canvasVirtual.getContext('2d');
@@ -131,12 +126,15 @@ function animar() {
     renderizador.render(escena, camara);
 }
 
-// 4. CONTROLADORES DEL MODAL Y PRECIOS
-function abrirModal(titulo, imagenSrc) {
+// ==========================================
+// CONTROLADORES DEL MODAL (Conectados a Window)
+// ==========================================
+
+window.abrirModal = function(titulo, imagenSrc) {
     document.getElementById('modalTitle').innerText = titulo;
     document.getElementById('productModal').style.display = 'flex';
 
-    currentModalImage = imagenSrc; // Guardamos la imagen en memoria
+    currentModalImage = imagenSrc;
 
     // Resetear siempre a 11oz al abrir un producto nuevo
     document.getElementById('modalMugSize').value = '11oz';
@@ -146,84 +144,32 @@ function abrirModal(titulo, imagenSrc) {
     inicializar3D(contenedor3D);
     construirTaza(imagenSrc, '11oz');
     animar();
-}
+};
 
-function cerrarModal() {
+window.cerrarModal = function() {
     document.getElementById('productModal').style.display = 'none';
     if (animacionID) cancelAnimationFrame(animacionID);
     document.getElementById('visor3d').innerHTML = '';
     grupoTaza = null;
-}
+};
 
-// NUEVO: Función que cambia el precio y reconstruye la taza 3D en tiempo real
-function actualizarPrecioModal() {
+window.actualizarPrecioModal = function() {
     const size = document.getElementById('modalMugSize').value;
     const priceEl = document.getElementById('modalPrice');
 
-    // Si el JSON cargó con éxito, leemos el precio dinámico de Stock (Índice 0 = Menudeo)
-    if (datosPlataforma && datosPlataforma.precios[size]) {
+    if (datosPlataforma && datosPlataforma.precios && datosPlataforma.precios[size]) {
         const precioStock = datosPlataforma.precios[size].stock[0];
         priceEl.innerText = `$${precioStock} MXN`;
     } else {
-        // Respaldo por si falla el JSON
         priceEl.innerText = size === '15oz' ? '$190 MXN' : '$150 MXN';
     }
 
     if (currentModalImage && escena) {
         construirTaza(currentModalImage, size);
     }
-}
+};
 
-// NUEVO: Mensaje de WhatsApp actualizado con tu número y el tamaño elegido
-function comprarDirecto() {
-    const titulo = document.getElementById('modalTitle').innerText;
-    const selectSize = document.getElementById('modalMugSize');
-    const sizeText = selectSize.options[selectSize.selectedIndex].text;
-    const price = document.getElementById('modalPrice').innerText;
-
-    const miNumero = "2223066747";
-    const mensaje = encodeURIComponent(
-        `¡Hola Ctrl+Geek!\n\n` +
-        `Me interesa pedir un diseño del catálogo fijo:\n` +
-        `☕ *${titulo}*\n` +
-        `📐 *Selección:* ${sizeText}\n` +
-        `💵 *Total:* ${price}\n\n` +
-        `¿A dónde te puedo enviar el comprobante de pago?`
-    );
-    window.open(`https://wa.me/${miNumero}?text=${mensaje}`, '_blank');
-}
-
-// 3. MOTOR DE ANIMACIÓN
-function animar() {
-    animacionID = requestAnimationFrame(animar);
-    if (grupoTaza) {
-        grupoTaza.rotation.y -= 0.003;
-    }
-    renderizador.render(escena, camara);
-}
-
-// 4. CONTROLADORES DEL MODAL
-function abrirModal(titulo, imagenSrc) {
-    document.getElementById('modalTitle').innerText = titulo;
-    document.getElementById('productModal').style.display = 'flex';
-
-    const contenedor3D = document.getElementById('visor3d');
-
-    inicializar3D(contenedor3D);
-    construirTaza(imagenSrc);
-    animar();
-}
-
-function cerrarModal() {
-    document.getElementById('productModal').style.display = 'none';
-
-    if (animacionID) cancelAnimationFrame(animacionID);
-    document.getElementById('visor3d').innerHTML = '';
-    grupoTaza = null;
-}
-
-// NUEVO: Mensaje de WhatsApp actualizado con tu número, PDF y el tamaño elegido
-function comprarDirecto() {
+window.comprarDirecto = function() {
     const titulo = document.getElementById('modalTitle').innerText;
     const selectSize = document.getElementById('modalMugSize');
     const sizeText = selectSize.options[selectSize.selectedIndex].text;
@@ -260,7 +206,6 @@ function comprarDirecto() {
     doc.setFont("helvetica", "bold"); doc.setFontSize(20); doc.setTextColor(37, 211, 102);
     doc.text(`Total a Pagar: ${price}`, 20, 125);
 
-    // Descarga del PDF
     doc.save(`Cotizacion_${folio}.pdf`);
 
     // 2. ENVIAR WHATSAPP
@@ -275,4 +220,4 @@ function comprarDirecto() {
         `Te adjunto el PDF de cotización. ¿A dónde te puedo enviar el comprobante de pago?`
     );
     window.open(`https://wa.me/${miNumero}?text=${mensaje}`, '_blank');
-}
+};
