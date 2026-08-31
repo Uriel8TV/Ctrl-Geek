@@ -55,9 +55,16 @@ body {
 }
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    /* Esta línea es oro puro: acomoda las tarjetas automáticamente */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 25px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
+
 .product-card {
     background: #252526;
     border: 1px solid #333;
@@ -195,4 +202,39 @@ body {
     0% { transform: translateY(0px); }
     50% { transform: translateY(-8px); }
     100% { transform: translateY(0px); }
+}
+
+/* Comportamiento base (Escritorio) */
+.modal-content {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    background: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modal-3d-container {
+    flex: 1; /* Toma la mitad del espacio disponible */
+    min-height: 400px;
+}
+
+.modal-info {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* La regla exclusiva para Celulares y Tablets */
+@media (max-width: 768px) {
+    .modal-content {
+        flex-direction: column; /* Apila el 3D arriba y texto abajo */
+        overflow-y: auto;
+    }
+    .modal-3d-container {
+        min-height: 350px;
+        width: 100%;
+    }
 }

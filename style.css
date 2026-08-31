@@ -344,60 +344,59 @@ input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
 }
 
 /* =========================================
-   DISEÑO RESPONSIVO EXTREMO (MÓVILES)
+   DISEÑO RESPONSIVO EXTREMO (MÓVILES Y TABLETS)
    ========================================= */
 @media (max-width: 992px) {
-    /* --- CORRECCIÓN IMAGEN 1: BARRA SUPERIOR --- */
-    header, .top-bar {
-        display: flex;
-        flex-direction: column; /* Apila el logo, el título y el botón uno sobre otro */
-        align-items: center;
-        justify-content: center;
-        padding: 15px !important;
-        gap: 12px;
-        height: auto !important;
-    }
-
-    header a, header button, .btn-back {
-        width: 100%; /* El botón tomará todo el ancho disponible */
-        white-space: nowrap; /* Prohíbe que el texto del botón salte de línea */
-        margin: 0;
-        box-sizing: border-box;
-    }
-
-    /* --- CORRECCIÓN IMAGEN 2: EL EDITOR CORTADO --- */
     body {
-        overflow-x: hidden; /* Prohíbe que la página entera se deslice a los lados */
+        padding-top: 140px; /* Aumenta el espacio porque la barra superior será más alta */
     }
 
-    .editor-container {
-        display: block !important; /* Forzamos un diseño en bloque, destruyendo las columnas */
-        width: 100% !important;
-        padding: 10px;
+    /* --- 1. BARRA SUPERIOR APILADA --- */
+    .navbar {
+        flex-direction: column;
+        padding: 15px;
+        gap: 12px;
+    }
+
+    .navbar img {
+        margin-right: 0;
+    }
+
+    .btn-crear {
+        width: 100%;
+        text-align: center;
         box-sizing: border-box;
     }
 
-    .workspace, .tools-panel {
-        display: block !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        float: none !important;
-        margin-bottom: 20px;
+    /* --- 2. COLUMNAS DEL EDITOR APILADAS --- */
+    .editor-layout {
+        flex-direction: column; /* Esto empuja el panel de herramientas abajo */
         padding: 10px;
+    }
+
+    .workspace-column, .tools-column {
+        width: 100%; /* Ambas cajas toman el 100% del ancho */
+        max-width: 100%;
+        flex: none; /* Anula el flex: 6 y flex: 4 de escritorio */
+        max-height: none; /* Elimina el scroll interno del panel de herramientas */
+        overflow: visible;
         box-sizing: border-box;
     }
 
-    /* --- PROTECCIÓN DEL LIENZO INTERACTIVO --- */
+    /* --- 3. PROTECCIÓN DEL LIENZO INTERACTIVO --- */
     .canvas-wrapper {
         width: 100%;
-        overflow-x: auto; /* Permite deslizar SOLO el área del dibujo */
+        overflow-x: auto; /* Permite deslizar el dedo solo en el dibujo */
         overflow-y: hidden;
-        -webkit-overflow-scrolling: touch; /* Deslizamiento suave en iOS/Android */
-        border: 2px solid #569cd6; /* Borde azul para que el usuario vea dónde dibujar */
+        -webkit-overflow-scrolling: touch;
     }
 
-    .viewer-3d {
-        width: 100% !important;
-        height: 350px !important;
+    .ruler-top {
+        min-width: 825px; /* Fuerza a que la regla no se comprima */
+    }
+
+    /* Ajuste de altura para el 3D en celulares */
+    #canvas3d-container {
+        height: 300px;
     }
 }

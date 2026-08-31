@@ -221,3 +221,14 @@ window.comprarDirecto = function() {
     );
     window.open(`https://wa.me/${miNumero}?text=${mensaje}`, '_blank');
 };
+
+// Detecta cuando la pantalla cambia de tamaño y ajusta el 3D
+window.addEventListener('resize', () => {
+    if (camara && renderizador) {
+        const contenedor3D = document.getElementById('visor3d');
+        // Actualiza la cámara y el renderizador a la nueva dimensión de la caja
+        camara.aspect = contenedor3D.clientWidth / contenedor3D.clientHeight;
+        camara.updateProjectionMatrix();
+        renderizador.setSize(contenedor3D.clientWidth, contenedor3D.clientHeight);
+    }
+});
