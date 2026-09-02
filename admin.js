@@ -1,4 +1,27 @@
 // ==========================================
+// 1. SEGURIDAD DEL PANEL (FRONTEND)
+// ==========================================
+// Se ejecuta inmediatamente al intentar cargar el panel
+(function verificarSeguridad() {
+    const estadoAdmin = sessionStorage.getItem('ctrlgeek_admin_token');
+
+    if (estadoAdmin !== 'desbloqueado') {
+        const pass = prompt("🔒 ACCESO RESTRINGIDO\nIngresa la contraseña maestra para el panel de Ctrl+Geek:");
+
+        // Aquí defines tu contraseña secreta
+        if (pass === "urlwolf081291") {
+            sessionStorage.setItem('ctrlgeek_admin_token', 'desbloqueado');
+            alert("✅ Bienvenido, Guapo.");
+        } else {
+            alert("❌ Acceso denegado.");
+            window.location.href = "index.html"; // Expulsado a la tienda principal
+        }
+    }
+})();
+
+// ... (Aquí abajo iría el resto de tus funciones de admin.js como switchTab, etc.)
+
+// ==========================================
 // LÓGICA DEL PANEL DE ADMINISTRACIÓN
 // ==========================================
 

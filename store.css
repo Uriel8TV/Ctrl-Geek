@@ -238,3 +238,56 @@ body {
         width: 100%;
     }
 }
+
+/* --- CORRECCIÓN RESPONSIVA PARA EL MODAL DE LA TIENDA --- */
+@media (max-width: 992px) {
+    .modal-content {
+        flex-direction: column !important;
+        width: 90% !important;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 20px !important;
+    }
+
+    .modal-3d-container {
+        width: 100% !important;
+        height: auto !important; /* Evita alturas fijas que oculten texto */
+        min-height: 200px;
+        margin-bottom: 20px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-info {
+        width: 100% !important;
+        padding: 0 !important;
+        text-align: center !important;
+        border: none !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-shrink: 0; /* IMPIDE que el texto sea aplastado por falta de espacio */
+    }
+
+    /* Forzamos a que el texto se acomode en múltiples líneas si es necesario */
+    .modal-info h2, .modal-info p {
+        width: 100% !important;
+        white-space: normal !important;
+        display: block !important;
+        line-height: 1.4 !important;
+    }
+
+    .modal-info h2 {
+        margin-bottom: 8px !important;
+    }
+    .modal-info p {
+        font-size: 14px;
+        text-align: center !important;
+    }
+
+    #modalMugSize {
+        width: 90% !important;
+        text-align: center;
+    }
+}

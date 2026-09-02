@@ -7,7 +7,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #1e1e1e;
     color: #d4d4d4;
-    padding-top: 100px; /* Espacio para el navbar fijo */
+    /* Eliminado el padding-top fijo para evitar bugs con sticky */
 }
 
 /* =========================================
@@ -60,7 +60,7 @@ body {
     display: flex;
     align-items: center;
     border-bottom: 2px solid #569cd6;
-    position: fixed;
+    position: sticky; /* Sticky permite que el contenido fluya natural */
     top: 0; left: 0;
     z-index: 1000;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -347,9 +347,7 @@ input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
    DISEÑO RESPONSIVO EXTREMO (MÓVILES Y TABLETS)
    ========================================= */
 @media (max-width: 992px) {
-    body {
-        padding-top: 140px; /* Aumenta el espacio porque la barra superior será más alta */
-    }
+    /* Eliminado el padding-top del body que rompía la vista exprés */
 
     /* --- 1. BARRA SUPERIOR APILADA --- */
     .navbar {
@@ -399,4 +397,66 @@ input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
     #canvas3d-container {
         height: 300px;
     }
+
+    /* --- 4. CORRECCIÓN DE FUENTES Y ACCESIBILIDAD --- */
+    /* 16px evita que los iPhone hagan zoom automático molesto */
+    select, input, button, .checkbox-label {
+        font-size: 16px !important;
+    }
+
+    /* --- 5. CORRECCIÓN DE BOTONES ESTIRADOS --- */
+    .checkout-section {
+        padding: 15px; /* Damos respiro a los lados */
+    }
+
+    .checkout-section button {
+        padding: 12px; /* Reducimos lo alto del botón */
+        border-radius: 8px; /* Bordes más amigables en celular */
+    }
+
+    /* --- 6. CORRECCIÓN DEL MODAL DE LA TIENDA (BUG DEL TESTER) --- */
+    .modal-content {
+        flex-direction: column !important; /* Apila la imagen arriba y el texto abajo */
+        width: 90% !important;
+        max-height: 85vh;
+        overflow-y: auto; /* Permite hacer scroll si el texto es muy largo */
+        padding: 20px !important;
+    }
+
+    .modal-3d-container {
+        width: 100% !important;
+        height: 250px !important; /* Reduce la altura de la imagen en celular */
+        margin-bottom: 15px;
+    }
+
+    .modal-info {
+        width: 100% !important; /* Obliga al texto a usar todo el ancho disponible */
+        padding: 0 !important;
+    }
+
+    .modal-info p {
+        font-size: 14px; /* Mejora la legibilidad del texto descriptivo */
+    }
+}
+
+/* --- ESTILIZACIÓN DE BOTONES PARA QUE NO SE ESTIREN --- */
+.checkout-section {
+    align-items: center; /* Centra el contenido inferior */
+}
+
+/* Limita el ancho del botón de la barra, el total y el WhatsApp */
+.btn-crear,
+.checkout-section button,
+.checkout-section div {
+    width: 100%;
+    max-width: 400px; /* Tamaño máximo elegante */
+    margin: 0 auto; /* Centrado automático */
+    box-sizing: border-box;
+}
+
+/* Solo para la vista exprés, que el área de texto también se alinee */
+.express-ui {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
 }
