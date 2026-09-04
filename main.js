@@ -330,6 +330,12 @@ const UICore = {
         // -----------------------------------------------------
         // ⚡ MODO DIOS: LECTURA DE JSON Y EXPORTACIÓN ALTA CALIDAD
         // -----------------------------------------------------
+        const panelDios = document.getElementById('modoDiosUI');
+        // Solo mostramos el panel si hay un token de sesión de admin guardado en el navegador
+        if (sessionStorage.getItem('ctrlgeek_admin_token') === 'desbloqueado') {
+            if (panelDios) panelDios.style.display = 'block';
+        }
+
         const inputCargarPedido = document.getElementById('inputCargarPedido');
         if (inputCargarPedido) {
             inputCargarPedido.addEventListener('change', function(evento) {

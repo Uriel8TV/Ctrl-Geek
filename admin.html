@@ -40,9 +40,9 @@
             <button class="tab-btn" onclick="switchTab('catalogo')">📦 Catálogo Estacional</button>
             <button class="tab-btn" onclick="switchTab('tazas')">📐 Gestor de Tamaños</button>
             <button class="tab-btn" onclick="switchTab('fuentes')">🔤 Fuentes del Sistema</button>
-            <a href="editor.html" class="tab-btn" style="background-color: #d9534f; text-align: center; display: block; text-decoration: none; margin-top: 30px; color: white;">
+            <button class="tab-btn" onclick="abrirModoDios()" style="background-color: #d9534f; text-align: center; display: block; margin-top: 30px; color: white; width: 100%;">
                 🎨 Abrir Modo Dios
-            </a>
+            </button>
         </aside>
 
         <main class="admin-main">
@@ -114,6 +114,12 @@
         const fs = require('fs');
         const path = require('path');
         const rutaDatos = path.join(__dirname, 'datos.json');
+
+        // Función para inyectar la llave maestra y abrir el editor
+        function abrirModoDios() {
+            sessionStorage.setItem('ctrlgeek_admin_token', 'desbloqueado');
+            window.location.href = 'editor.html';
+        }
 
         // Navegación de Pestañas
         function switchTab(tabId) {
