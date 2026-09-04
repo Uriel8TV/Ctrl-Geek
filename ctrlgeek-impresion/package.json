@@ -1,0 +1,22 @@
+{
+  "name": "ctrlgeek-produccion",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.ctrlgeek.produccion",
+    "productName": "CtrlGeek Produccion",
+    "win": {
+      "target": "portable",
+      "icon": "logo.ico"
+    }
+  },
+  "devDependencies": {
+    "electron": "^44.1.1",
+    "electron-builder": "^24.13.3"
+  }
+}
