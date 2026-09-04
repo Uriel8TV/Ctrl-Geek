@@ -19,17 +19,13 @@
         <a href="index.html" class="btn-crear">✨ Tienda</a>
     </nav>
 
-    <!-- NUEVO CONTENEDOR PRINCIPAL: 2 COLUMNAS -->
     <div class="editor-layout">
 
-        <!-- ==========================================
-             COLUMNA IZQUIERDA: ÁREA DE TRABAJO (LIENZOS)
-             ========================================== -->
+        <!-- COLUMNA IZQUIERDA -->
         <div class="workspace-column" id="workspaceArea">
             <h2 style="margin-top: 0; color: white;">Editor Interactivo (Tazas 11 oz)</h2>
 
             <div class="canvas-wrapper" style="position: relative;">
-                <!-- Reglas dinámicas -->
                 <div class="ruler-top" id="rulerTop">
                     <span>0 cm</span><span class="center-mark">10 cm (Centro)</span><span>20 cm (Área útil)</span>
                 </div>
@@ -51,12 +47,9 @@
             </div>
         </div>
 
-        <!-- ==========================================
-             COLUMNA DERECHA: PANEL DE HERRAMIENTAS
-             ========================================== -->
+        <!-- COLUMNA DERECHA -->
         <div class="tools-column">
 
-            <!-- RESTAURADO: Controles de Tamaño y Proyecto -->
             <div class="controls" style="flex-wrap: wrap; background: transparent; padding: 0;">
                 <label style="color: #569cd6; font-weight: bold; width: 100%;">Configuración del Proyecto:</label>
                 <select id="mugSize" title="Tamaño de la taza" style="width: 100%; margin-bottom: 10px; padding: 10px; background: #1e1e1e; color: white; border: 1px solid #555; border-radius: 4px;">
@@ -67,7 +60,6 @@
 
             <div style="border-bottom: 1px solid #444; margin: 10px 0;"></div>
 
-            <!-- Selector de Modalidad -->
             <div class="controls" style="flex-direction: column; align-items: stretch; background: transparent; padding: 0;">
                 <label style="color: #569cd6; font-weight: bold; margin-bottom: 5px;">Tipo de Servicio:</label>
                 <select id="orderMode" title="Tipo de Servicio" style="padding: 10px; background: #1e1e1e; color: white; border: 1px solid #555; border-radius: 4px;">
@@ -76,61 +68,30 @@
                 </select>
             </div>
 
-            <!-- Interfaz para Modo Exprés (Oculta por defecto) -->
             <div class="express-ui" id="expressUI">
                 <h3 style="color: white; margin-top: 0;">Sube tu idea y nosotros la armamos</h3>
                 <input type="file" id="expressImage" accept="image/*" class="btn-secondary" style="padding: 10px;">
                 <textarea id="expressInstructions" placeholder="Ej. Quiero que la imagen esté del lado izquierdo y diga 'Level Up' en color verde..."></textarea>
-
-                <div class="co-creator-protocol">
-                    <h4>📜 Protocolo de Co-Creación: Modo Desarrollador</h4>
-                    <p class="protocol-subtitle">"Tú pones la idea, nosotros escribimos el código gráfico."</p>
-                    <div class="protocol-steps">
-                        <p><span>1. Briefing (Prompt):</span> Envía tu idea y referencias visuales.</p>
-                        <p><span>2. Alpha Build:</span> En 24 a 48 hrs recibirás el primer boceto.</p>
-                        <p><span>3. Fase Beta:</span> Tienes hasta 2 rondas de ajustes (color, fuente, ubicación). <em>Cambios radicales requieren recotización.</em></p>
-                        <p><span>4. Release Candidate:</span> Con tu OK final, el diseño se congela y pasa a producción.</p>
-                    </div>
-                    <label class="protocol-checkbox">
-                        <input type="checkbox" id="agreeProtocol">
-                        Acepto los términos de diseño y revisión.
-                    </label>
-                </div>
             </div>
 
-            <!-- Interfaz Normal (Autoservicio) -->
             <div id="autoServiceUI" style="display: flex; flex-direction: column; gap: 20px;">
-
-                <!-- Catálogo Rápido -->
                 <div class="catalog-section">
                     <h3 style="margin-top: 0;">Catálogo Rápido</h3>
                     <div class="catalog-grid">
                         <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/python-hello.png')"><img src="assets/python-hello.png" alt="Python"></div>
                         <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/git-commit.png')"><img src="assets/git-commit.png" alt="Git"></div>
                         <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/logo-bat.png')"><img src="assets/logo-bat.png" alt="Batman"></div>
-                        <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/re.png')"><img src="assets/re.png" alt="RE"></div>
-                        <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/bridges-logo.png')"><img src="assets/bridges-logo.png" alt="Bridges"></div>
-                        <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/spiderman.png')"><img src="assets/spiderman.png" alt="Spider-Man"></div>
-                        <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/nvidia.png')"><img src="assets/nvidia.png" alt="Nvidia"></div>
-                        <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/controller.png')"><img src="assets/controller.png" alt="controller"></div>
-                        <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/mario.png')"><img src="assets/mario.png" alt="Mario"></div>
-                        <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/avatar.png')"><img src="assets/avatar.png" alt="Avatar"></div>
                     </div>
                 </div>
 
                 <div style="border-bottom: 1px solid #444;"></div>
 
-                <!-- Herramientas de Edición -->
                 <div class="controls text-controls" style="flex-wrap: wrap; background: transparent; padding: 0;">
-                    <div style="display: flex; gap: 10px; width: 100%;">
-                    <button id="btnGuardarProyecto" class="btn-secondary" style="flex: 1; font-size: 12px;">Guardar Proyecto</button>
-                    <input type="file" id="projectLoader" accept=".json" style="display: none;">
-                    <button id="btnCargarProyecto" class="btn-secondary" onclick="document.getElementById('projectLoader').click()" style="flex: 1; font-size: 12px;">Cargar Proyecto</button>
-                </div>
+
                     <input type="file" id="imageLoader" accept="image/*" title="Subir Imagen">
                     <button id="btnBorrar" class="btn-danger">Eliminar Objeto</button>
 
-                    <div style="width: 100%; margin: 5px 0;"></div> <!-- Salto de línea visual -->
+                    <div style="width: 100%; margin: 5px 0;"></div>
 
                     <button id="btnAgregarTexto">Añadir Texto</button>
                     <input type="color" id="textColor" value="#000000" title="Color">
@@ -138,21 +99,8 @@
                         <option value="monospace">Consola (Básica)</option>
                         <option value="'Fira Code', monospace">Fira Code (Dev)</option>
                         <option value="'Press Start 2P', cursive">Press Start (Retro)</option>
-                        <option value="'Orbitron', sans-serif">Orbitron (Sci-Fi)</option>
-                        <option value="'Bangers', cursive">Bangers (Cómics)</option>
                     </select>
 
-                         <!-- Controles existentes de tu editor... -->
-                    <div class="controls">
-                        <!-- ... tus inputs de imagen y texto ... -->
-                     </div>
-
-                     <!-- BOTÓN DE ADMINISTRADOR (Invisible por defecto) -->
-                     <button id="btnDescargarAdmin" class="btn-danger" style="display: none; width: 100%; margin-top: 20px; font-size: 16px;">
-                           🛠️ Extraer PNG de Producción
-                     </button>
-
-                    <!-- RESTAURADO: Botón de Fuentes Custom -->
                     <label class="btn-secondary" style="padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; margin-top: 10px;">
                         + Subir Fuente
                         <input type="file" id="fontLoader" accept=".ttf, .otf, .woff" style="display: none;">
@@ -161,23 +109,99 @@
                     <label class="checkbox-label" style="color: white; width: 100%; margin-top: 10px;">
                         <input type="checkbox" id="textShadow"> Sombreado
                     </label>
+
+                    <!-- PANEL DE ADMINISTRADOR (Modo Dios) -->
+                    <div id="modoDiosUI" style="display: block; width: 100%; background: #2d2d2d; padding: 15px; border-radius: 5px; margin-top: 20px; border: 1px dashed #ff4757;">
+                        <h4 style="color: #ff4757; margin-top: 0; text-align: center; margin-bottom: 15px;">⚡ MODO DIOS ⚡</h4>
+
+                        <input type="file" id="inputCargarPedido" accept=".json" style="display: none;">
+                        <button class="btn-secondary" onclick="document.getElementById('inputCargarPedido').click()" style="width: 100%; margin-bottom: 10px; font-size: 14px;">
+                            📥 1. Cargar .json del Cliente
+                        </button>
+
+                        <!-- Tu botón original de descarga de producción -->
+                        <button id="btnDescargarAdmin" class="btn-danger" style="width: 100%; font-size: 14px;">
+                            🖨️ 2. Extraer PNG para Imprenta
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- Sección Sticky de Pago -->
+            <!-- SECCIÓN DE CHECKOUT -->
             <div class="checkout-section">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <label style="color: white; font-weight: bold;">Cantidad:</label>
                     <input type="number" id="orderQty" value="1" min="1" max="100" style="width: 60px; padding: 5px; text-align: center; background: #1e1e1e; color: white; border: 1px solid #555; border-radius: 4px;">
                 </div>
-                <div id="priceDisplay" class="price-badge" style="text-align: center; font-size: 18px; padding: 10px; margin-top: 10px; background: #569cd6; color: white; border-radius: 4px; font-weight: bold;">Total: $150 MXN</div>
-                <button id="btnWhatsApp" class="btn-whatsapp" style="padding: 15px; font-size: 16px; margin-top: 10px; width: 100%; cursor: pointer; border: none; border-radius: 4px;">Finalizar Pedido por WhatsApp</button>
+                <div id="priceDisplay" class="price-badge" style="text-align: center; font-size: 18px; padding: 10px; margin-top: 10px; background: #569cd6; color: white; border-radius: 4px; font-weight: bold;">Total: $139 MXN</div>
+
+                <!-- Botón de cliente modificado -->
+                <button id="btnGenerarPedido" class="btn-whatsapp" style="padding: 15px; font-size: 16px; margin-top: 10px; width: 100%; cursor: pointer; border: none; border-radius: 4px; background-color: #25D366; color: white; font-weight: bold;">
+                    1. Guardar Diseño y Abrir WhatsApp
+                </button>
             </div>
 
         </div>
     </div>
 
+    <!-- SCRIPT INYECTADO PARA EL FLUJO JSON -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Asume que tu variable global del lienzo se llama 'canvas' en tu main.js frontend
+
+            // 1. LÓGICA DEL CLIENTE: Descargar JSON y mandar a WhatsApp
+            const btnGenerarPedido = document.getElementById('btnGenerarPedido');
+            if(btnGenerarPedido) {
+                btnGenerarPedido.addEventListener('click', function() {
+                    if(typeof canvas === 'undefined') {
+                        alert("Error: El lienzo no está inicializado.");
+                        return;
+                    }
+
+                    // Extraer los datos del lienzo
+                    const estadoLienzo = canvas.toJSON();
+                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(estadoLienzo));
+
+                    // Forzar la descarga del .json
+                    const botonDescarga = document.createElement('a');
+                    botonDescarga.setAttribute("href", dataStr);
+                    botonDescarga.setAttribute("download", "pedido_ctrlgeek.json");
+                    document.body.appendChild(botonDescarga);
+                    botonDescarga.click();
+                    botonDescarga.remove();
+
+                    alert("¡Tu diseño se ha guardado como 'pedido_ctrlgeek.json'!\n\nPor favor, adjunta este archivo en el chat de WhatsApp que se abrirá a continuación.");
+
+                    // Abrir WhatsApp con un mensaje predeterminado
+                    const numeroWhatsApp = "522220000000"; // Reemplaza con tu número real
+                    const cantidad = document.getElementById('orderQty').value;
+                    const mensaje = `¡Hola Ctrl+Geek! Aquí tienes mi pedido por ${cantidad} taza(s). Te adjunto el archivo .json con mi diseño.`;
+                    window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                });
+            }
+
+            // 2. LÓGICA DEL ADMINISTRADOR (MODO DIOS): Cargar JSON del cliente
+            const inputCargarPedido = document.getElementById('inputCargarPedido');
+            if(inputCargarPedido) {
+                inputCargarPedido.addEventListener('change', function(evento) {
+                    const archivo = evento.target.files[0];
+                    if (!archivo) return;
+
+                    const lector = new FileReader();
+                    lector.onload = function(e) {
+                        const contenidoJson = e.target.result;
+                        canvas.loadFromJSON(contenidoJson, function() {
+                            canvas.renderAll();
+                            alert("¡Diseño del cliente cargado con éxito en el lienzo!");
+                        });
+                    };
+                    lector.readAsText(archivo);
+                });
+            }
+        });
+    </script>
+
     <script src="main.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>

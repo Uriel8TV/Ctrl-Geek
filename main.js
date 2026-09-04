@@ -20,19 +20,14 @@ const ConfigTazas = {
 // ==========================================
 // 2. INICIALIZACIÓN DEL NÚCLEO (CORE INIT)
 // ==========================================
-// Inicialización del Lienzo 2D (Fabric.js)
 const canvas = new fabric.Canvas('mugCanvas', { backgroundColor: '#ffffff' });
 canvas.preserveObjectStacking = true;
-
 fabric.Object.prototype.objectCaching = false;
 document.getElementById('rulerLeft').style.height = ConfigTazas['11oz'].lienzoH + 'px';
 
-
-// Variables Globales del Motor 3D (Three.js)
 const contenedor3D = document.getElementById('canvas3d-container');
 let escena, camara, renderizador, controles, texturaTaza, grupoTaza;
 
-// Carga del Cerebro de Datos (JSON)
 async function inicializarSistema() {
     try {
         const respuesta = await fetch('datos.json');
@@ -53,10 +48,8 @@ const Motor3D = {
             window.actualizarVistaPrevia = function() {};
             return;
         }
-
         contenedor3D.innerHTML = '';
         escena = new THREE.Scene();
-
         camara = new THREE.PerspectiveCamera(45, contenedor3D.clientWidth / contenedor3D.clientHeight, 0.1, 1000);
         camara.position.set(0, 1.5, 5.5);
 
@@ -76,32 +69,24 @@ const Motor3D = {
             if (texturaTaza) texturaTaza.needsUpdate = true;
         };
     },
-
     configurarIluminacion: function() {
         escena.add(new THREE.AmbientLight(0xffffff, 0.6));
-
         const luzFrontal = new THREE.DirectionalLight(0xffffff, 0.5);
         luzFrontal.position.set(5, 5, 5);
         escena.add(luzFrontal);
-
         const luzTrasera = new THREE.DirectionalLight(0xffffff, 0.4);
         luzTrasera.position.set(-5, 5, -5);
         escena.add(luzTrasera);
     },
-
     construirModelo: function() {
         if (!escena) return;
         if (grupoTaza) escena.remove(grupoTaza);
-
         const config = ConfigTazas[AppState.tazaActiva];
-
-        // Usamos directamente el elemento DOM que controla Fabric.js
         texturaTaza = new THREE.CanvasTexture(canvas.getElement());
         texturaTaza.anisotropy = renderizador.capabilities.getMaxAnisotropy();
 
         const materialBlanco = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
         const tazaBase = new THREE.Mesh(new THREE.CylinderGeometry(config.radio3D, config.radio3D, config.alto3D, 64), materialBlanco);
-
         const grosorAsa = AppState.tazaActiva === '15oz' ? 0.22 : 0.2;
         const asa = new THREE.Mesh(new THREE.TorusGeometry(config.radio3D * 0.65, grosorAsa, 16, 32), materialBlanco);
         asa.position.set(config.radio3D, 0, 0);
@@ -114,7 +99,6 @@ const Motor3D = {
         const materialImpresion = new THREE.MeshStandardMaterial({
             map: texturaTaza, roughness: 0.2, transparent: true, polygonOffset: true, polygonOffsetFactor: -1
         });
-
         const altoImpresion = config.alto3D * (config.altoCM / config.altoFisico);
         const envoltorio = new THREE.Mesh(
             new THREE.CylinderGeometry(config.radio3D + 0.001, config.radio3D + 0.001, altoImpresion, 64, 1, true, inicioRadianes, radianesImpresion),
@@ -126,7 +110,6 @@ const Motor3D = {
         grupoTaza.rotation.y = Math.PI / 2.2;
         escena.add(grupoTaza);
     },
-
     animar: function() {
         requestAnimationFrame(() => Motor3D.animar());
         controles.update();
@@ -141,19 +124,15 @@ const EditorCore = {
     cambiarTamanoTaza: function(nuevoTamano) {
         AppState.tazaActiva = nuevoTamano;
         const config = ConfigTazas[nuevoTamano];
-
         canvas.setWidth(config.lienzoW);
         canvas.setHeight(config.lienzoH);
-
         document.getElementById('rulerTop').innerHTML = `<span>0 cm</span><span class="center-mark">${config.anchoCM/2} cm (Centro)</span><span>${config.anchoCM} cm</span>`;
         document.getElementById('rulerLeft').innerHTML = `<span>0 cm</span><span>${config.altoCM/2} cm</span><span>${config.altoCM} cm</span>`;
         document.getElementById('rulerLeft').style.height = `${config.lienzoH}px`;
-
         Motor3D.construirModelo();
         canvas.centerObject(canvas.getActiveObject());
         canvas.renderAll();
     },
-
     agregarTexto: function() {
         const textoInteractvo = new fabric.IText('Ingresa tu texto', {
             left: (canvas.getWidth() / 2) - 100,
@@ -167,7 +146,6 @@ const EditorCore = {
         canvas.setActiveObject(textoInteractvo);
         window.actualizarVistaPrevia();
     },
-
     eliminarObjetoActivo: function() {
         const objActivo = canvas.getActiveObject();
         if (objActivo && !objActivo.isEditing) {
@@ -176,7 +154,6 @@ const EditorCore = {
             window.actualizarVistaPrevia();
         }
     },
-
     cargarImagenBase64: function(dataUrl) {
         fabric.Image.fromURL(dataUrl, function(img) {
             img.scaleToWidth(300);
@@ -186,8 +163,6 @@ const EditorCore = {
             window.actualizarVistaPrevia();
         });
     },
-
-    // Método expuesto a la UI global (HTML onclick)
     cargarDisenoDesdeURL: function(urlImagen) {
         fabric.Image.fromURL(urlImagen, function(img) {
             if (!img) return alert("Error de carga. Verifica la ruta o el servidor local.");
@@ -199,7 +174,6 @@ const EditorCore = {
         });
     }
 };
-
 window.cargarDisenoCatalogo = EditorCore.cargarDisenoDesdeURL;
 
 // ==========================================
@@ -209,23 +183,21 @@ const CommerceEngine = {
     calcularPrecio: function() {
         const qty = parseInt(document.getElementById('orderQty').value) || 1;
         const mode = document.getElementById('orderMode').value;
-
         let rangoIndex = qty >= 12 ? 2 : (qty >= 6 ? 1 : 0);
         let precioUnitario = 0;
 
-        if (AppState.datosPlataforma && AppState.datosPlataforma.precios[AppState.tazaActiva]) {
+        if (AppState.datosPlataforma && AppState.datosPlataforma.precios && AppState.datosPlataforma.precios[AppState.tazaActiva]) {
             precioUnitario = AppState.datosPlataforma.precios[AppState.tazaActiva][mode][rangoIndex];
         } else {
             precioUnitario = mode === 'auto'
-                ? (qty >= 12 ? 100 : (qty >= 6 ? 120 : 150))
-                : (qty >= 12 ? 150 : (qty >= 6 ? 170 : 200));
+                ? (qty >= 12 ? 99 : (qty >= 6 ? 120 : 139))
+                : (qty >= 12 ? 150 : (qty >= 6 ? 170 : 199));
         }
 
         const total = precioUnitario * qty;
         document.getElementById('priceDisplay').innerText = `Total: $${total} MXN`;
         return { total, precioUnitario, qty, mode };
     },
-
     generarPDF: function(datosPedido) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -235,19 +207,15 @@ const CommerceEngine = {
         doc.setFont("helvetica", "bold");
         doc.setFontSize(24); doc.setTextColor(86, 156, 214);
         doc.text("Ctrl+Geek", 20, 25);
-
         doc.setFont("helvetica", "normal"); doc.setFontSize(12); doc.setTextColor(100, 100, 100);
         doc.text("Laboratorio de Impresión Geek", 20, 32);
-
         doc.setFontSize(11); doc.setTextColor(0, 0, 0);
         doc.text(`Folio: ${folio}`, 150, 25);
         doc.text(`Fecha: ${fecha}`, 150, 31);
-
         doc.setLineWidth(0.5); doc.setDrawColor(200, 200, 200); doc.line(20, 40, 190, 40);
 
         doc.setFont("helvetica", "bold"); doc.setFontSize(16);
         doc.text("Detalles de la Cotización", 20, 55);
-
         doc.setFont("helvetica", "normal"); doc.setFontSize(12);
         doc.text(`Producto: Taza de ${AppState.tazaActiva}`, 20, 70);
         doc.text(`Modalidad: ${datosPedido.mode === 'auto' ? 'Autoservicio' : 'Diseño Exprés'}`, 20, 80);
@@ -257,14 +225,12 @@ const CommerceEngine = {
         doc.line(20, 110, 190, 110);
         doc.setFont("helvetica", "bold"); doc.setFontSize(20); doc.setTextColor(37, 211, 102);
         doc.text(`Total a Pagar: $${datosPedido.total} MXN`, 20, 125);
-
         doc.setFont("helvetica", "italic"); doc.setFontSize(10); doc.setTextColor(120, 120, 120);
-        doc.text("INSTRUCCIONES:\n1. Envíe este documento por WhatsApp.\n2. Adjunte comprobante de pago.\n3. Adjunte el diseño PNG (Autoservicio).", 20, 150);
+        doc.text("INSTRUCCIONES:\n1. Envíe este documento por WhatsApp.\n2. Adjunte su archivo .json descargado.", 20, 150);
 
         doc.save(`Cotizacion_${folio}.pdf`);
         return folio;
     },
-
     procesarCompra: function() {
         const datosPedido = this.calcularPrecio();
         const modo = document.getElementById('orderMode').value;
@@ -278,16 +244,23 @@ const CommerceEngine = {
 
         if (modo === 'auto') {
             canvas.discardActiveObject(); canvas.renderAll();
-            const link = document.createElement('a');
-            link.download = `CtrlGeek_Diseno_${folio}.png`;
-            // Calidad de exportación del cliente multiplicada x5
-            link.href = canvas.toDataURL({ format: 'png', multiplier: 5 });
-            link.click();
 
-            mensaje = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Autoservicio.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\nAdjunto PDF e imagen.`);
+            // Generación y descarga del JSON del lienzo (Reemplaza el PNG)
+            const estadoLienzo = canvas.toJSON();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(estadoLienzo));
+            const botonDescargaJson = document.createElement('a');
+            botonDescargaJson.setAttribute("href", dataStr);
+            botonDescargaJson.setAttribute("download", `pedido_ctrlgeek_${folio}.json`);
+            document.body.appendChild(botonDescargaJson);
+            botonDescargaJson.click();
+            botonDescargaJson.remove();
+
+            mensaje = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Autoservicio.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\nAdjunto mi cotización en PDF y el archivo .json con mi diseño.`);
+
+            alert("¡Archivos descargados!\n\nPor favor, envíanos el archivo .json de tu diseño y el PDF de cotización por WhatsApp.");
         } else {
             const instrucciones = document.getElementById('expressInstructions').value;
-            mensaje = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Diseño Exprés.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\n📝 *Instrucciones:* "${instrucciones}"`);
+            mensaje = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Diseño Exprés.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\n📝 *Instrucciones:* "${instrucciones}"\nAdjunto mi cotización en PDF.`);
         }
 
         window.open(`https://wa.me/2223066747?text=${mensaje}`, '_blank');
@@ -299,13 +272,11 @@ const CommerceEngine = {
 // ==========================================
 const UICore = {
     iniciarListeners: function() {
-        // Hardware / IO
         document.getElementById('mugSize').addEventListener('change', (e) => EditorCore.cambiarTamanoTaza(e.target.value));
         document.getElementById('btnAgregarTexto').addEventListener('click', EditorCore.agregarTexto);
         document.getElementById('btnBorrar').addEventListener('click', EditorCore.eliminarObjetoActivo);
         document.addEventListener('keydown', (e) => { if (e.key === 'Delete' || e.key === 'Backspace') EditorCore.eliminarObjetoActivo(); });
 
-        // Checkout
         document.getElementById('orderQty').addEventListener('input', CommerceEngine.calcularPrecio);
         document.getElementById('orderMode').addEventListener('change', (e) => {
             CommerceEngine.calcularPrecio();
@@ -314,9 +285,11 @@ const UICore = {
             document.getElementById('autoServiceUI').style.display = isExpress ? 'none' : 'flex';
             document.getElementById('expressUI').style.display = isExpress ? 'flex' : 'none';
         });
-        document.getElementById('btnWhatsApp').addEventListener('click', () => CommerceEngine.procesarCompra());
 
-        // Manejadores de Imagen Local
+        // Vinculamos el botón verde (soporta ID btnWhatsApp o btnGenerarPedido)
+        const btnComprar = document.getElementById('btnGenerarPedido') || document.getElementById('btnWhatsApp');
+        if(btnComprar) btnComprar.addEventListener('click', () => CommerceEngine.procesarCompra());
+
         document.getElementById('imageLoader').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -326,7 +299,6 @@ const UICore = {
             e.target.value = '';
         });
 
-        // Manejadores de Fuentes
         document.getElementById('fontLoader').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -343,7 +315,6 @@ const UICore = {
             e.target.value = '';
         });
 
-        // Sincronización de controles de texto interactivo
         document.getElementById('textColor').addEventListener('input', (e) => this.actualizarPropiedadTexto('fill', e.target.value));
         document.getElementById('textFont').addEventListener('change', (e) => this.actualizarPropiedadTexto('fontFamily', e.target.value));
         document.getElementById('textShadow').addEventListener('change', (e) => {
@@ -351,41 +322,68 @@ const UICore = {
             this.actualizarPropiedadTexto('shadow', shadow);
         });
 
-        // Eventos Fabric.js -> Motor 3D
         const eventosCanvas = ['object:modified', 'object:added', 'object:removed', 'text:changed', 'selection:cleared'];
         eventosCanvas.forEach(ev => canvas.on(ev, window.actualizarVistaPrevia));
         canvas.on('selection:created', this.sincronizarPanelTexto);
         canvas.on('selection:updated', this.sincronizarPanelTexto);
 
         // -----------------------------------------------------
-        // 🛡️ DETECTOR DE MODO ADMINISTRADOR (SEGURIDAD)
+        // ⚡ MODO DIOS: LECTURA DE JSON Y EXPORTACIÓN ALTA CALIDAD
         // -----------------------------------------------------
+        const inputCargarPedido = document.getElementById('inputCargarPedido');
+        if (inputCargarPedido) {
+            inputCargarPedido.addEventListener('change', function(evento) {
+                const archivo = evento.target.files[0];
+                if (!archivo) return;
+                const lector = new FileReader();
+                lector.onload = function(e) {
+                    const contenidoJson = e.target.result;
+                    canvas.loadFromJSON(contenidoJson, function() {
+                        canvas.renderAll();
+                        window.actualizarVistaPrevia();
+                        alert("¡Diseño del cliente cargado con éxito en el lienzo!");
+                    });
+                };
+                lector.readAsText(archivo);
+            });
+        }
+
         const btnAdmin = document.getElementById('btnDescargarAdmin');
+        if (btnAdmin) {
+            btnAdmin.addEventListener('click', () => {
+                canvas.discardActiveObject();
+                canvas.renderAll();
 
-        // Verifica si la sesión de admin está activa
-        if (sessionStorage.getItem('ctrlgeek_admin_token') === 'desbloqueado') {
-            if (btnAdmin) {
-                btnAdmin.style.display = 'block'; // Revela el botón invisible
+                // 1. Extraemos el diseño en alta resolución (x5)
+                const dataUrlNormal = canvas.toDataURL({ format: 'png', multiplier: 5 });
 
-                btnAdmin.addEventListener('click', () => {
-                    canvas.discardActiveObject();
-                    canvas.renderAll();
+                // 2. Creamos un lienzo invisible en memoria
+                const imgTemp = new Image();
+                imgTemp.onload = function() {
+                    const canvasEspejo = document.createElement('canvas');
+                    canvasEspejo.width = imgTemp.width;
+                    canvasEspejo.height = imgTemp.height;
+                    const ctx = canvasEspejo.getContext('2d');
 
+                    // 3. Aplicamos la transformación de espejo (Flip horizontal)
+                    ctx.translate(canvasEspejo.width, 0);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(imgTemp, 0, 0);
+
+                    // 4. Descargamos el archivo final ya volteado
                     const link = document.createElement('a');
-                    link.download = `Produccion_CtrlGeek_${Date.now()}.png`;
-                    // Calidad de exportación del admin multiplicada x5
-                    link.href = canvas.toDataURL({ format: 'png', multiplier: 5 });
+                    link.download = `CtrlGeek_ModoEspejo_${Date.now()}.png`;
+                    link.href = canvasEspejo.toDataURL('image/png');
                     link.click();
-                });
-            }
+                };
+                imgTemp.src = dataUrlNormal;
+            });
         }
     },
-
     actualizarPropiedadTexto: function(prop, valor) {
         const o = canvas.getActiveObject();
         if (o && o.type === 'i-text') { o.set(prop, valor); canvas.renderAll(); }
     },
-
     sincronizarPanelTexto: function(e) {
         const objActivo = e.selected[0];
         if (objActivo && objActivo.type === 'i-text') {
@@ -394,7 +392,6 @@ const UICore = {
             document.getElementById('textShadow').checked = objActivo.shadow !== null;
         }
     },
-
     renderizarCatalogoDinamico: function() {
         if (!AppState.datosPlataforma || !AppState.datosPlataforma.catalogoEditor) return;
         const grid = document.querySelector('.catalog-grid');
