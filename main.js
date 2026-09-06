@@ -245,7 +245,7 @@ const CommerceEngine = {
         if (modo === 'auto') {
             canvas.discardActiveObject(); canvas.renderAll();
 
-            // Generación y descarga del JSON del lienzo (Reemplaza el PNG)
+            // Generación y descarga del JSON del lienzo
             const estadoLienzo = canvas.toJSON();
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(estadoLienzo));
             const botonDescargaJson = document.createElement('a');
@@ -286,7 +286,6 @@ const UICore = {
             document.getElementById('expressUI').style.display = isExpress ? 'flex' : 'none';
         });
 
-        // Vinculamos el botón verde (soporta ID btnWhatsApp o btnGenerarPedido)
         const btnComprar = document.getElementById('btnGenerarPedido') || document.getElementById('btnWhatsApp');
         if(btnComprar) btnComprar.addEventListener('click', () => CommerceEngine.procesarCompra());
 
@@ -328,10 +327,10 @@ const UICore = {
         canvas.on('selection:updated', this.sincronizarPanelTexto);
 
         // -----------------------------------------------------
-        // ⚡ MODO DIOS: LECTURA DE JSON Y EXPORTACIÓN ALTA CALIDAD
+        // ⚡ MODO DIOS: SEGURIDAD, LECTURA JSON Y EXPORTACIÓN ESPEJO
         // -----------------------------------------------------
         const panelDios = document.getElementById('modoDiosUI');
-        // Solo mostramos el panel si hay un token de sesión de admin guardado en el navegador
+        // El candado: Verifica si vienes de admin.html
         if (sessionStorage.getItem('ctrlgeek_admin_token') === 'desbloqueado') {
             if (panelDios) panelDios.style.display = 'block';
         }
@@ -360,10 +359,10 @@ const UICore = {
                 canvas.discardActiveObject();
                 canvas.renderAll();
 
-                // 1. Extraemos el diseño en alta resolución (x5)
+                // 1. Extraemos el diseño normal en alta resolución
                 const dataUrlNormal = canvas.toDataURL({ format: 'png', multiplier: 5 });
 
-                // 2. Creamos un lienzo invisible en memoria
+                // 2. Aplicamos la transformación Espejo en un lienzo virtual
                 const imgTemp = new Image();
                 imgTemp.onload = function() {
                     const canvasEspejo = document.createElement('canvas');
@@ -371,12 +370,12 @@ const UICore = {
                     canvasEspejo.height = imgTemp.height;
                     const ctx = canvasEspejo.getContext('2d');
 
-                    // 3. Aplicamos la transformación de espejo (Flip horizontal)
+                    // Magia del espejo horizontal
                     ctx.translate(canvasEspejo.width, 0);
                     ctx.scale(-1, 1);
                     ctx.drawImage(imgTemp, 0, 0);
 
-                    // 4. Descargamos el archivo final ya volteado
+                    // 3. Descargamos la imagen final lista para imprimir
                     const link = document.createElement('a');
                     link.download = `CtrlGeek_ModoEspejo_${Date.now()}.png`;
                     link.href = canvasEspejo.toDataURL('image/png');

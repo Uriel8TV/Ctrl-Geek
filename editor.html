@@ -110,18 +110,19 @@
                         <input type="checkbox" id="textShadow"> Sombreado
                     </label>
 
-                    <!-- PANEL DE ADMINISTRADOR (Modo Dios) -->
+                    <!-- ========================================== -->
+                    <!-- ⚡ PANEL DE ADMINISTRADOR (Modo Dios) ⚡ -->
+                    <!-- ========================================== -->
                     <div id="modoDiosUI" style="display: none; width: 100%; background: #2d2d2d; padding: 15px; border-radius: 5px; margin-top: 20px; border: 1px dashed #ff4757;">
-                        <h4 style="color: #ff4757; margin-top: 0; text-align: center; margin-bottom: 15px;">⚡ MODO DIOS ⚡</h4>
+                        <h4 style="text-align: center; color: #ff4757; margin-top: 0; font-family: 'Fira Code', monospace;">⚡ MODO DIOS ⚡</h4>
 
+                        <label for="inputCargarPedido" style="display: block; background: #555; color: white; padding: 10px; text-align: center; border-radius: 4px; cursor: pointer; margin-bottom: 10px; font-family: 'Fira Code', monospace; font-size: 14px;">
+                                 📥 1. Cargar .json del Cliente
+                        </label>
                         <input type="file" id="inputCargarPedido" accept=".json" style="display: none;">
-                        <button class="btn-secondary" onclick="document.getElementById('inputCargarPedido').click()" style="width: 100%; margin-bottom: 10px; font-size: 14px;">
-                            📥 1. Cargar .json del Cliente
-                        </button>
 
-                        <!-- Tu botón original de descarga de producción -->
-                        <button id="btnDescargarAdmin" class="btn-danger" style="width: 100%; font-size: 14px;">
-                            🖨️ 2. Extraer PNG para Imprenta
+                        <button id="btnDescargarAdmin" style="width: 100%; background: #d9534f; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-family: 'Fira Code', monospace; font-size: 14px;">
+                                🖨️ 2. Extraer PNG (Espejo)
                         </button>
                     </div>
 

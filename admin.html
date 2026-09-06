@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="admin.css?v=2.0">
     <style>
-        /* Estilos rápidos para el layout si admin.css no los tiene */
         body { background: #121212; color: #fff; font-family: 'Fira Code', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; }
         .admin-nav { background: #1e1e1e; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #569cd6; }
         .admin-nav h1 { margin: 0; font-size: 20px; }
@@ -25,9 +24,27 @@
         .form-group label { display: block; margin-bottom: 5px; color: #aaa; font-size: 14px; }
         .form-group input { width: 100%; padding: 10px; background: #2d2d2d; border: 1px solid #555; color: white; border-radius: 4px; }
         .btn-save { background: #25D366; color: white; border: none; padding: 15px 30px; font-size: 16px; border-radius: 5px; cursor: pointer; margin-top: 20px; font-family: 'Fira Code', monospace; }
+
+        /* BLOQUEO DE SEGURIDAD */
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18, 18, 18, 0.98); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .login-box { background: #1e1e1e; padding: 40px; border-radius: 8px; text-align: center; border: 1px solid #444; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 300px; }
+        .login-box h2 { color: #569cd6; margin-top: 0; }
+        .login-box input { width: 90%; padding: 12px; margin: 20px 0; background: #2d2d2d; color: white; border: 1px solid #555; border-radius: 4px; font-family: 'Fira Code', monospace; }
+        .login-box button { background: #569cd6; color: white; border: none; padding: 12px 20px; width: 100%; border-radius: 4px; cursor: pointer; font-family: 'Fira Code', monospace; font-weight: bold; }
     </style>
 </head>
 <body>
+
+    <!-- PANTALLA DE BLOQUEO -->
+    <div id="loginOverlay">
+        <div class="login-box">
+            <h2>🔒 Acceso Restringido</h2>
+            <p style="color: #aaa; font-size: 12px;">Ingresa la clave de producción</p>
+            <input type="password" id="adminPassword" placeholder="Contraseña...">
+            <button onclick="verificarAcceso()">Desbloquear Panel</button>
+            <p id="errorMsg" style="color: #ff4757; font-size: 12px; display: none; margin-top: 15px;">Contraseña incorrecta</p>
+        </div>
+    </div>
 
     <nav class="admin-nav">
         <h1>Ctrl<span>+</span>Geek 🖥️ <span>Panel de Control</span></h1>
@@ -95,25 +112,31 @@
 
                 <button class="btn-save" onclick="guardarPreciosEnJSON()">💾 Guardar Matriz en datos.json</button>
             </section>
-
-            <!-- RESTO DE PESTAÑAS (Catálogo, Tazas, Fuentes) se mantienen igual en estructura HTML -->
-            <section id="tab-catalogo" class="admin-section">
-                <h2>Gestor de Catálogo Rápido (En construcción)</h2>
-            </section>
-            <section id="tab-tazas" class="admin-section">
-                <h2>Inyector de Nuevos Modelos (En construcción)</h2>
-            </section>
-            <section id="tab-fuentes" class="admin-section">
-                <h2>Biblioteca de Tipografías (En construcción)</h2>
-            </section>
         </main>
     </div>
 
-    <!-- SCRIPT INYECTADO PARA LECTURA/ESCRITURA DE DATOS.JSON -->
+    <!-- SCRIPT DE LÓGICA -->
     <script>
         const fs = require('fs');
         const path = require('path');
         const rutaDatos = path.join(__dirname, 'datos.json');
+
+        // SEGURIDAD: Verificar contraseña
+        function verificarAcceso() {
+            const pass = document.getElementById('adminPassword').value;
+            // AQUI PONES TU CONTRASEÑA REAL 👇
+            if (pass === 'admin123') {
+                document.getElementById('loginOverlay').style.display = 'none';
+                cargarDatosActuales();
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+
+        // Permitir dar Enter en el campo de contraseña
+        document.getElementById('adminPassword').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') verificarAcceso();
+        });
 
         // Función para inyectar la llave maestra y abrir el editor
         function abrirModoDios() {
@@ -129,7 +152,7 @@
             event.target.classList.add('active');
         }
 
-        // Leer datos.json al arrancar el panel
+        // Leer datos.json
         function cargarDatosActuales() {
             if (fs.existsSync(rutaDatos)) {
                 try {
@@ -155,18 +178,13 @@
             }
         }
 
-        // Guardar cambios sobreescribiendo datos.json
         function guardarPreciosEnJSON() {
             let datos = { configuracion: { preciosLocal: {}, preciosWeb: {} }, catalogo: [] };
 
-            // Si el archivo ya existe, preservamos el catálogo
             if (fs.existsSync(rutaDatos)) {
-                try {
-                    datos = JSON.parse(fs.readFileSync(rutaDatos, 'utf-8'));
-                } catch(e) {}
+                try { datos = JSON.parse(fs.readFileSync(rutaDatos, 'utf-8')); } catch(e) {}
             }
 
-            // Actualizar Precios Locales
             datos.configuracion.preciosLocal = {
                 unitario: parseInt(document.getElementById('local_unitario').value),
                 mayoreo: parseInt(document.getElementById('local_mayoreo').value),
@@ -175,7 +193,6 @@
                 soloDisenoDigital: parseInt(document.getElementById('local_solo_digital').value)
             };
 
-            // Actualizar Precios Web
             datos.configuracion.preciosWeb = {
                 unitario: parseInt(document.getElementById('web_unitario').value),
                 mayoreo: parseInt(document.getElementById('web_mayoreo').value),
@@ -183,13 +200,9 @@
                 disenoExtra: parseInt(document.getElementById('web_diseno_extra').value)
             };
 
-            // Escribir archivo de vuelta al disco
             fs.writeFileSync(rutaDatos, JSON.stringify(datos, null, 2), 'utf-8');
-            alert("✅ ¡Matriz de precios guardada en datos.json!\n\nTu tienda principal se actualizará con estas tarifas.");
+            alert("✅ ¡Matriz de precios guardada en datos.json!");
         }
-
-        // Arrancar
-        document.addEventListener('DOMContentLoaded', cargarDatosActuales);
     </script>
 </body>
 </html>
