@@ -240,12 +240,14 @@ const CommerceEngine = {
             return alert("⚠️ Debes aceptar el Protocolo de Co-Creación.");
         }
 
+        // 1. Inicia la descarga del PDF (jsPDF ejecuta su save)
         const folio = this.generarPDF(datosPedido);
+        let mensajeUrl = "";
 
         if (modo === 'auto') {
             canvas.discardActiveObject(); canvas.renderAll();
 
-            // Generación y descarga del JSON del lienzo
+            // 2. Inicia la descarga del JSON
             const estadoLienzo = canvas.toJSON();
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(estadoLienzo));
             const botonDescargaJson = document.createElement('a');
@@ -255,21 +257,33 @@ const CommerceEngine = {
             botonDescargaJson.click();
             botonDescargaJson.remove();
 
-            // El usuario decide manualmente cuándo abrir WhatsApp
-            const mensaje = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Autoservicio.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\nAdjunto mi cotización en PDF y el archivo .json con mi diseño.`);
-
-            if (confirm(`¡Archivos descargados con éxito!\nFolio: ${folio}\n\nPresiona "Aceptar" para abrir WhatsApp y enviarnos tu cotización (.pdf) y diseño (.json).`)) {
-                window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank');
-            }
-
+            mensajeUrl = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Autoservicio.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\nAdjunto mi cotización en PDF y el archivo .json con mi diseño.`);
         } else {
             const instrucciones = document.getElementById('expressInstructions').value;
-            const mensaje = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Diseño Exprés.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\n📝 *Instrucciones:* "${instrucciones}"\nAdjunto mi cotización en PDF.`);
+            mensajeUrl = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Diseño Exprés.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\n📝 *Instrucciones:* "${instrucciones}"\nAdjunto mi cotización en PDF.`);
+        }
 
-            // El usuario decide manualmente cuándo abrir WhatsApp
-            if (confirm(`¡Cotización generada!\nFolio: ${folio}\n\nPresiona "Aceptar" para abrir WhatsApp y enviarnos este PDF junto con tus instrucciones.`)) {
-                window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank');
-            }
+        // 3. Magia UX: Actualizar la interfaz sin molestar al usuario con alertas
+        const btnGenerar = document.getElementById('btnGenerarPedido');
+        const btnWhats = document.getElementById('btnEnviarWhatsApp');
+
+        if (btnGenerar && btnWhats) {
+            // Apagamos visualmente el botón de descarga para evitar dobles clics
+            btnGenerar.innerText = "✔️ Archivos guardados";
+            btnGenerar.style.backgroundColor = "#444";
+            btnGenerar.style.color = "#aaa";
+            btnGenerar.disabled = true;
+
+            // Encendemos el botón de WhatsApp con el enlace y folio listo
+            btnWhats.href = `https://wa.me/${numeroWhatsApp}?text=${mensajeUrl}`;
+            btnWhats.target = "_blank"; // Se abrirá de forma segura en una nueva pestaña
+            btnWhats.style.display = "block";
+
+            // Un pequeño efecto de animación para llamar la atención al botón verde
+            btnWhats.animate([
+                { transform: 'scale(0.95)', opacity: 0.5 },
+                { transform: 'scale(1)', opacity: 1 }
+            ], { duration: 300, easing: 'ease-out' });
         }
     }
 };
