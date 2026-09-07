@@ -330,7 +330,6 @@ const UICore = {
         // ⚡ MODO DIOS: SEGURIDAD, LECTURA JSON Y EXPORTACIÓN ESPEJO
         // -----------------------------------------------------
         const panelDios = document.getElementById('modoDiosUI');
-        // El candado: Verifica si vienes de admin.html
         if (sessionStorage.getItem('ctrlgeek_admin_token') === 'desbloqueado') {
             if (panelDios) panelDios.style.display = 'block';
         }
@@ -357,12 +356,23 @@ const UICore = {
         if (btnAdmin) {
             btnAdmin.addEventListener('click', () => {
                 canvas.discardActiveObject();
+
+                // 🕵️‍♂️ TINTA INVISIBLE AVANZADA: Oculta líneas y rectángulos guía
+                const guiasOcultas = [];
+                canvas.getObjects().forEach(obj => {
+                    if (obj.type === 'line' || obj.strokeDashArray || (obj.type === 'rect' && (!obj.fill || obj.fill === 'transparent'))) {
+                        obj.visible = false;
+                        guiasOcultas.push(obj);
+                    }
+                });
+
                 canvas.renderAll();
 
-                // 1. Extraemos el diseño normal en alta resolución
                 const dataUrlNormal = canvas.toDataURL({ format: 'png', multiplier: 5 });
 
-                // 2. Aplicamos la transformación Espejo en un lienzo virtual
+                guiasOcultas.forEach(obj => obj.visible = true);
+                canvas.renderAll();
+
                 const imgTemp = new Image();
                 imgTemp.onload = function() {
                     const canvasEspejo = document.createElement('canvas');
@@ -370,14 +380,29 @@ const UICore = {
                     canvasEspejo.height = imgTemp.height;
                     const ctx = canvasEspejo.getContext('2d');
 
-                    // Magia del espejo horizontal
                     ctx.translate(canvasEspejo.width, 0);
                     ctx.scale(-1, 1);
                     ctx.drawImage(imgTemp, 0, 0);
 
-                    // 3. Descargamos la imagen final lista para imprimir
+                    // 4. Guías punteadas exclusivas arriba y abajo (Trazadas sobre el borde exacto)
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#a9a9a9';
+                    ctx.setLineDash([15, 10]); // Configuración de línea punteada
+                    ctx.beginPath();
+
+                    // Punteado superior
+                    ctx.moveTo(0, 1);
+                    ctx.lineTo(canvasEspejo.width, 1);
+
+                    // Punteado inferior
+                    ctx.moveTo(0, canvasEspejo.height - 1);
+                    ctx.lineTo(canvasEspejo.width, canvasEspejo.height - 1);
+
+                    ctx.stroke();
+                    ctx.setLineDash([]); // Restablecemos el pincel
+
                     const link = document.createElement('a');
-                    link.download = `CtrlGeek_ModoEspejo_${Date.now()}.png`;
+                    link.download = `CtrlGeek_Produccion_${Date.now()}.png`;
                     link.href = canvasEspejo.toDataURL('image/png');
                     link.click();
                 };
