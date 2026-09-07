@@ -234,13 +234,13 @@ const CommerceEngine = {
     procesarCompra: function() {
         const datosPedido = this.calcularPrecio();
         const modo = document.getElementById('orderMode').value;
+        const numeroWhatsApp = "522223066747";
 
         if (modo === 'express' && !document.getElementById('agreeProtocol').checked) {
             return alert("⚠️ Debes aceptar el Protocolo de Co-Creación.");
         }
 
         const folio = this.generarPDF(datosPedido);
-        let mensaje = '';
 
         if (modo === 'auto') {
             canvas.discardActiveObject(); canvas.renderAll();
@@ -255,15 +255,22 @@ const CommerceEngine = {
             botonDescargaJson.click();
             botonDescargaJson.remove();
 
-            mensaje = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Autoservicio.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\nAdjunto mi cotización en PDF y el archivo .json con mi diseño.`);
+            // El usuario decide manualmente cuándo abrir WhatsApp
+            const mensaje = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Autoservicio.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\nAdjunto mi cotización en PDF y el archivo .json con mi diseño.`);
 
-            alert("¡Archivos descargados!\n\nPor favor, envíanos el archivo .json de tu diseño y el PDF de cotización por WhatsApp.");
+            if (confirm(`¡Archivos descargados con éxito!\nFolio: ${folio}\n\nPresiona "Aceptar" para abrir WhatsApp y enviarnos tu cotización (.pdf) y diseño (.json).`)) {
+                window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank');
+            }
+
         } else {
             const instrucciones = document.getElementById('expressInstructions').value;
-            mensaje = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Diseño Exprés.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\n📝 *Instrucciones:* "${instrucciones}"\nAdjunto mi cotización en PDF.`);
-        }
+            const mensaje = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Diseño Exprés.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\n📝 *Instrucciones:* "${instrucciones}"\nAdjunto mi cotización en PDF.`);
 
-        window.open(`https://wa.me/2223066747?text=${mensaje}`, '_blank');
+            // El usuario decide manualmente cuándo abrir WhatsApp
+            if (confirm(`¡Cotización generada!\nFolio: ${folio}\n\nPresiona "Aceptar" para abrir WhatsApp y enviarnos este PDF junto con tus instrucciones.`)) {
+                window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank');
+            }
+        }
     }
 };
 

@@ -138,70 +138,13 @@
                 <div id="priceDisplay" class="price-badge" style="text-align: center; font-size: 18px; padding: 10px; margin-top: 10px; background: #569cd6; color: white; border-radius: 4px; font-weight: bold;">Total: $139 MXN</div>
 
                 <!-- Botón de cliente modificado -->
-                <button id="btnGenerarPedido" class="btn-whatsapp" style="padding: 15px; font-size: 16px; margin-top: 10px; width: 100%; cursor: pointer; border: none; border-radius: 4px; background-color: #25D366; color: white; font-weight: bold;">
-                    1. Guardar Diseño y Abrir WhatsApp
+                <button id="btnGenerarPedido" class="btn-whatsapp" style="padding: 15px; font-size: 16px; margin-top: 10px; width: 100%; cursor: pointer; border: none; border-radius: 4px; background-color: #569cd6; color: white; font-weight: bold;">
+                    Guardar Diseño y Cotización
                 </button>
             </div>
 
         </div>
     </div>
-
-    <!-- SCRIPT INYECTADO PARA EL FLUJO JSON -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Asume que tu variable global del lienzo se llama 'canvas' en tu main.js frontend
-
-            // 1. LÓGICA DEL CLIENTE: Descargar JSON y mandar a WhatsApp
-            const btnGenerarPedido = document.getElementById('btnGenerarPedido');
-            if(btnGenerarPedido) {
-                btnGenerarPedido.addEventListener('click', function() {
-                    if(typeof canvas === 'undefined') {
-                        alert("Error: El lienzo no está inicializado.");
-                        return;
-                    }
-
-                    // Extraer los datos del lienzo
-                    const estadoLienzo = canvas.toJSON();
-                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(estadoLienzo));
-
-                    // Forzar la descarga del .json
-                    const botonDescarga = document.createElement('a');
-                    botonDescarga.setAttribute("href", dataStr);
-                    botonDescarga.setAttribute("download", "pedido_ctrlgeek.json");
-                    document.body.appendChild(botonDescarga);
-                    botonDescarga.click();
-                    botonDescarga.remove();
-
-                    alert("¡Tu diseño se ha guardado como 'pedido_ctrlgeek.json'!\n\nPor favor, adjunta este archivo en el chat de WhatsApp que se abrirá a continuación.");
-
-                    // Abrir WhatsApp con un mensaje predeterminado
-                    const numeroWhatsApp = "522220000000"; // Reemplaza con tu número real
-                    const cantidad = document.getElementById('orderQty').value;
-                    const mensaje = `¡Hola Ctrl+Geek! Aquí tienes mi pedido por ${cantidad} taza(s). Te adjunto el archivo .json con mi diseño.`;
-                    window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`, '_blank');
-                });
-            }
-
-            // 2. LÓGICA DEL ADMINISTRADOR (MODO DIOS): Cargar JSON del cliente
-            const inputCargarPedido = document.getElementById('inputCargarPedido');
-            if(inputCargarPedido) {
-                inputCargarPedido.addEventListener('change', function(evento) {
-                    const archivo = evento.target.files[0];
-                    if (!archivo) return;
-
-                    const lector = new FileReader();
-                    lector.onload = function(e) {
-                        const contenidoJson = e.target.result;
-                        canvas.loadFromJSON(contenidoJson, function() {
-                            canvas.renderAll();
-                            alert("¡Diseño del cliente cargado con éxito en el lienzo!");
-                        });
-                    };
-                    lector.readAsText(archivo);
-                });
-            }
-        });
-    </script>
 
     <script src="main.js"></script>
 </body>
