@@ -172,6 +172,40 @@ const EditorCore = {
             canvas.setActiveObject(img);
             window.actualizarVistaPrevia();
         });
+    },
+    // --- NUEVAS HERRAMIENTAS AVANZADAS ---
+    modificarOpacidad: function(valor) {
+        const obj = canvas.getActiveObject();
+        if (obj) {
+            obj.set('opacity', parseFloat(valor));
+            canvas.renderAll();
+            window.actualizarVistaPrevia();
+        }
+    },
+    cambiarCapa: function(accion) {
+        const obj = canvas.getActiveObject();
+        if (obj) {
+            if (accion === 'subir') canvas.bringForward(obj);
+            if (accion === 'bajar') canvas.sendBackwards(obj);
+            canvas.renderAll();
+            window.actualizarVistaPrevia();
+        }
+    },
+    quitarFondoBlanco: function() {
+        const obj = canvas.getActiveObject();
+        if (obj && obj.type === 'image') {
+            // Aplica el filtro RemoveColor buscando tonos blancos y casi blancos
+            const filter = new fabric.Image.filters.RemoveColor({
+                distance: 0.15,
+                color: "#ffffff"
+            });
+            obj.filters.push(filter);
+            obj.applyFilters();
+            canvas.renderAll();
+            window.actualizarVistaPrevia();
+        } else {
+            alert("⚠️ Primero haz clic sobre una imagen para poder borrarle el fondo blanco.");
+        }
     }
 };
 window.cargarDisenoCatalogo = EditorCore.cargarDisenoDesdeURL;
@@ -240,14 +274,12 @@ const CommerceEngine = {
             return alert("⚠️ Debes aceptar el Protocolo de Co-Creación.");
         }
 
-        // 1. Inicia la descarga del PDF (jsPDF ejecuta su save)
         const folio = this.generarPDF(datosPedido);
         let mensajeUrl = "";
 
         if (modo === 'auto') {
             canvas.discardActiveObject(); canvas.renderAll();
 
-            // 2. Inicia la descarga del JSON
             const estadoLienzo = canvas.toJSON();
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(estadoLienzo));
             const botonDescargaJson = document.createElement('a');
@@ -263,23 +295,19 @@ const CommerceEngine = {
             mensajeUrl = encodeURIComponent(`¡Hola Ctrl+Geek! 👋\nPedido Diseño Exprés.\n📄 *Folio:* ${folio}\n📦 *Cantidad:* ${datosPedido.qty} de ${AppState.tazaActiva}\n💵 *Total:* $${datosPedido.total} MXN\n📝 *Instrucciones:* "${instrucciones}"\nAdjunto mi cotización en PDF.`);
         }
 
-        // 3. Magia UX: Actualizar la interfaz sin molestar al usuario con alertas
         const btnGenerar = document.getElementById('btnGenerarPedido');
         const btnWhats = document.getElementById('btnEnviarWhatsApp');
 
         if (btnGenerar && btnWhats) {
-            // Apagamos visualmente el botón de descarga para evitar dobles clics
             btnGenerar.innerText = "✔️ Archivos guardados";
             btnGenerar.style.backgroundColor = "#444";
             btnGenerar.style.color = "#aaa";
             btnGenerar.disabled = true;
 
-            // Encendemos el botón de WhatsApp con el enlace y folio listo
             btnWhats.href = `https://wa.me/${numeroWhatsApp}?text=${mensajeUrl}`;
-            btnWhats.target = "_blank"; // Se abrirá de forma segura en una nueva pestaña
+            btnWhats.target = "_blank";
             btnWhats.style.display = "block";
 
-            // Un pequeño efecto de animación para llamar la atención al botón verde
             btnWhats.animate([
                 { transform: 'scale(0.95)', opacity: 0.5 },
                 { transform: 'scale(1)', opacity: 1 }
@@ -342,6 +370,12 @@ const UICore = {
             this.actualizarPropiedadTexto('shadow', shadow);
         });
 
+        // --- LISTENERS HERRAMIENTAS AVANZADAS ---
+        document.getElementById('itemOpacity')?.addEventListener('input', (e) => EditorCore.modificarOpacidad(e.target.value));
+        document.getElementById('btnSubirCapa')?.addEventListener('click', () => EditorCore.cambiarCapa('subir'));
+        document.getElementById('btnBajarCapa')?.addEventListener('click', () => EditorCore.cambiarCapa('bajar'));
+        document.getElementById('btnQuitarFondo')?.addEventListener('click', EditorCore.quitarFondoBlanco);
+
         const eventosCanvas = ['object:modified', 'object:added', 'object:removed', 'text:changed', 'selection:cleared'];
         eventosCanvas.forEach(ev => canvas.on(ev, window.actualizarVistaPrevia));
         canvas.on('selection:created', this.sincronizarPanelTexto);
@@ -378,7 +412,6 @@ const UICore = {
             btnAdmin.addEventListener('click', () => {
                 canvas.discardActiveObject();
 
-                // 🕵️‍♂️ TINTA INVISIBLE AVANZADA: Oculta líneas y rectángulos guía
                 const guiasOcultas = [];
                 canvas.getObjects().forEach(obj => {
                     if (obj.type === 'line' || obj.strokeDashArray || (obj.type === 'rect' && (!obj.fill || obj.fill === 'transparent'))) {
@@ -388,7 +421,6 @@ const UICore = {
                 });
 
                 canvas.renderAll();
-
                 const dataUrlNormal = canvas.toDataURL({ format: 'png', multiplier: 5 });
 
                 guiasOcultas.forEach(obj => obj.visible = true);
@@ -405,22 +437,16 @@ const UICore = {
                     ctx.scale(-1, 1);
                     ctx.drawImage(imgTemp, 0, 0);
 
-                    // 4. Guías punteadas exclusivas arriba y abajo (Trazadas sobre el borde exacto)
                     ctx.lineWidth = 2;
                     ctx.strokeStyle = '#a9a9a9';
-                    ctx.setLineDash([15, 10]); // Configuración de línea punteada
+                    ctx.setLineDash([15, 10]);
                     ctx.beginPath();
-
-                    // Punteado superior
                     ctx.moveTo(0, 1);
                     ctx.lineTo(canvasEspejo.width, 1);
-
-                    // Punteado inferior
                     ctx.moveTo(0, canvasEspejo.height - 1);
                     ctx.lineTo(canvasEspejo.width, canvasEspejo.height - 1);
-
                     ctx.stroke();
-                    ctx.setLineDash([]); // Restablecemos el pincel
+                    ctx.setLineDash([]);
 
                     const link = document.createElement('a');
                     link.download = `CtrlGeek_Produccion_${Date.now()}.png`;
@@ -437,6 +463,13 @@ const UICore = {
     },
     sincronizarPanelTexto: function(e) {
         const objActivo = e.selected[0];
+
+        // Sincroniza la barra de opacidad al tocar texto o imágenes
+        const sliderOpacidad = document.getElementById('itemOpacity');
+        if (sliderOpacidad && objActivo) {
+            sliderOpacidad.value = objActivo.opacity !== undefined ? objActivo.opacity : 1;
+        }
+
         if (objActivo && objActivo.type === 'i-text') {
             document.getElementById('textColor').value = objActivo.fill;
             document.getElementById('textFont').value = objActivo.fontFamily;

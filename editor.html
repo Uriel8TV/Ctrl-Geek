@@ -111,6 +111,25 @@
                     </label>
 
                     <!-- ========================================== -->
+                    <!-- 🛠️ HERRAMIENTAS AVANZADAS (NUEVO) -->
+                    <!-- ========================================== -->
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid #444; width: 100%; box-sizing: border-box;">
+                        <h4 style="margin: 0 0 10px 0; color: #569cd6; font-size: 13px;">Ajustes de Capa y Efectos:</h4>
+
+                        <label style="display: block; font-size: 12px; color: #ccc; margin-bottom: 5px;">Transparencia:</label>
+                        <input type="range" id="itemOpacity" min="0" max="1" step="0.1" value="1" style="width: 100%; margin-bottom: 15px;">
+
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <button id="btnSubirCapa" style="flex: 1; padding: 8px; background: #333; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer; font-size: 12px;">🔼 Al frente</button>
+                            <button id="btnBajarCapa" style="flex: 1; padding: 8px; background: #333; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer; font-size: 12px;">🔽 Atrás</button>
+                        </div>
+
+                        <button id="btnQuitarFondo" style="width: 100%; padding: 10px; background: transparent; border: 1px dashed #ff4757; color: #ff4757; font-weight: bold; border-radius: 4px; cursor: pointer;">
+                            🪄 Borrar Fondo Blanco
+                        </button>
+                    </div>
+
+                    <!-- ========================================== -->
                     <!-- ⚡ PANEL DE ADMINISTRADOR (Modo Dios) ⚡ -->
                     <!-- ========================================== -->
                     <div id="modoDiosUI" style="display: none; width: 100%; background: #2d2d2d; padding: 15px; border-radius: 5px; margin-top: 20px; border: 1px dashed #ff4757;">
@@ -137,12 +156,10 @@
                 </div>
                 <div id="priceDisplay" class="price-badge" style="text-align: center; font-size: 18px; padding: 10px; margin-top: 10px; background: #569cd6; color: white; border-radius: 4px; font-weight: bold;">Total: $139 MXN</div>
 
-                <!-- Botón 1: Descarga inicial -->
                 <button id="btnGenerarPedido" class="btn-whatsapp" style="padding: 15px; font-size: 16px; margin-top: 10px; width: 100%; cursor: pointer; border: none; border-radius: 4px; background-color: #569cd6; color: white; font-weight: bold; transition: all 0.3s;">
                     1. Guardar Diseño y Cotización
                 </button>
 
-                <!-- Botón 2: Enlace a WhatsApp (Oculto por defecto) -->
                 <a id="btnEnviarWhatsApp" style="display: none; padding: 15px; font-size: 16px; margin-top: 10px; width: 100%; cursor: pointer; border: none; border-radius: 4px; background-color: #25D366; color: white; font-weight: bold; text-align: center; text-decoration: none; box-sizing: border-box;">
                     💬 2. Enviar archivos por WhatsApp
                 </a>
