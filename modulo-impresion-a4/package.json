@@ -1,0 +1,25 @@
+{
+  "name": "ctrlgeek-produccion",
+  "version": "1.0.0",
+  "description": "Ensamblador de Produccion A4 - Ctrl-Geek / Core-Tech",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.ctrlgeek.produccion",
+    "productName": "CtrlGeek Produccion",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "icon.ico",
+      "target": "portable"
+    }
+  },
+  "devDependencies": {
+    "electron": "30.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}

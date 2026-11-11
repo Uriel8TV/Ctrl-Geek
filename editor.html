@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ctrl+Geek | Editor de Tazas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fira+Code&family=Orbitron&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2.0">
+</head>
+<body>
+
+    <nav class="navbar">
+        <img src="assets/logo.png" alt="Logo de Ctrl+Geek" onerror="this.style.display='none'">
+        <h1>Ctrl<span>+</span>Geek</h1>
+        <a href="index.html" class="btn-crear">✨ Tienda</a>
+    </nav>
+
+    <div class="editor-layout">
+
+        <!-- COLUMNA IZQUIERDA -->
+        <div class="workspace-column" id="workspaceArea">
+            <h2 style="margin-top: 0; color: white;">Editor Interactivo (Tazas 11 oz)</h2>
+
+            <div class="canvas-wrapper" style="position: relative;">
+                <div class="ruler-top" id="rulerTop">
+                    <span>0 cm</span><span class="center-mark">10 cm (Centro)</span><span>20 cm (Área útil)</span>
+                </div>
+                <div class="canvas-with-left-ruler">
+                    <div class="ruler-left" id="rulerLeft">
+                        <span>0 cm</span><span>4.7 cm</span><span>9.4 cm (Alto)</span>
+                    </div>
+                    <canvas id="mugCanvas" width="800" height="376"></canvas>
+                </div>
+                <div class="center-guide"></div>
+            </div>
+
+            <div class="preview-section">
+                <h3 style="color: white;">Vista Previa Interactiva 3D</h3>
+                <div id="canvas3d-container" class="css-mug">
+                    <div class="mug-highlight"></div>
+                </div>
+                <p class="hint-3d" style="color: #888;">Gira la taza con el cursor</p>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA -->
+        <div class="tools-column">
+
+            <div class="controls" style="flex-wrap: wrap; background: transparent; padding: 0;">
+                <label style="color: #569cd6; font-weight: bold; width: 100%;">Configuración del Proyecto:</label>
+                <select id="mugSize" title="Tamaño de la taza" style="width: 100%; margin-bottom: 10px; padding: 10px; background: #1e1e1e; color: white; border: 1px solid #555; border-radius: 4px;">
+                    <option value="11oz">Taza 11 oz (20 x 9.4 cm)</option>
+                    <option value="15oz">Taza Jumbo 15 oz (23 x 10 cm)</option>
+                </select>
+            </div>
+
+            <div style="border-bottom: 1px solid #444; margin: 10px 0;"></div>
+
+            <div class="controls" style="flex-direction: column; align-items: stretch; background: transparent; padding: 0;">
+                <label style="color: #569cd6; font-weight: bold; margin-bottom: 5px;">Tipo de Servicio:</label>
+                <select id="orderMode" title="Tipo de Servicio" style="padding: 10px; background: #1e1e1e; color: white; border: 1px solid #555; border-radius: 4px;">
+                    <option value="auto">Autoservicio (Tú diseñas)</option>
+                    <option value="express">Diseño Exprés (Nosotros lo hacemos)</option>
+                </select>
+            </div>
+
+            <div class="express-ui" id="expressUI">
+                <h3 style="color: white; margin-top: 0;">Sube tu idea y nosotros la armamos</h3>
+                <input type="file" id="expressImage" accept="image/*" class="btn-secondary" style="padding: 10px;">
+                <textarea id="expressInstructions" placeholder="Ej. Quiero que la imagen esté del lado izquierdo y diga 'Level Up' en color verde..."></textarea>
+            </div>
+
+            <div id="autoServiceUI" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="catalog-section">
+                    <h3 style="margin-top: 0;">Catálogo Rápido</h3>
+                    <div class="catalog-grid">
+                        <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/python-hello.png')"><img src="assets/python-hello.png" alt="Python"></div>
+                        <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/git-commit.png')"><img src="assets/git-commit.png" alt="Git"></div>
+                        <div class="catalog-item" onclick="cargarDisenoCatalogo('assets/logo-bat.png')"><img src="assets/logo-bat.png" alt="Batman"></div>
+                    </div>
+                </div>
+
+                <div style="border-bottom: 1px solid #444;"></div>
+
+                <div class="controls text-controls" style="flex-wrap: wrap; background: transparent; padding: 0;">
+
+                    <input type="file" id="imageLoader" accept="image/*" title="Subir Imagen">
+                    <button id="btnBorrar" class="btn-danger">Eliminar Objeto</button>
+
+                    <div style="width: 100%; margin: 5px 0;"></div>
+
+                    <button id="btnAgregarTexto">Añadir Texto</button>
+                    <input type="color" id="textColor" value="#000000" title="Color">
+                    <select id="textFont">
+                        <option value="monospace">Consola (Básica)</option>
+                        <option value="'Fira Code', monospace">Fira Code (Dev)</option>
+                        <option value="'Press Start 2P', cursive">Press Start (Retro)</option>
+                    </select>
+
+                    <label class="btn-secondary" style="padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; margin-top: 10px;">
+                        + Subir Fuente
+                        <input type="file" id="fontLoader" accept=".ttf, .otf, .woff" style="display: none;">
+                    </label>
+
+                    <label class="checkbox-label" style="color: white; width: 100%; margin-top: 10px;">
+                        <input type="checkbox" id="textShadow"> Sombreado
+                    </label>
+
+                    <!-- ========================================== -->
+                    <!-- 🛠️ HERRAMIENTAS AVANZADAS (NUEVO) -->
+                    <!-- ========================================== -->
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid #444; width: 100%; box-sizing: border-box;">
+                        <h4 style="margin: 0 0 10px 0; color: #569cd6; font-size: 13px;">Ajustes de Capa y Efectos:</h4>
+
+                        <label style="display: block; font-size: 12px; color: #ccc; margin-bottom: 5px;">Transparencia:</label>
+                        <input type="range" id="itemOpacity" min="0" max="1" step="0.1" value="1" style="width: 100%; margin-bottom: 15px;">
+
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <button id="btnSubirCapa" style="flex: 1; padding: 8px; background: #333; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer; font-size: 12px;">🔼 Al frente</button>
+                            <button id="btnBajarCapa" style="flex: 1; padding: 8px; background: #333; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer; font-size: 12px;">🔽 Atrás</button>
+                        </div>
+
+                        <button id="btnQuitarFondo" style="width: 100%; padding: 10px; background: transparent; border: 1px dashed #ff4757; color: #ff4757; font-weight: bold; border-radius: 4px; cursor: pointer;">
+                            🪄 Borrar Fondo Blanco
+                        </button>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- ⚡ PANEL DE ADMINISTRADOR (Modo Dios) ⚡ -->
+                    <!-- ========================================== -->
+                    <div id="modoDiosUI" style="display: none; width: 100%; background: #2d2d2d; padding: 15px; border-radius: 5px; margin-top: 20px; border: 1px dashed #ff4757;">
+                        <h4 style="text-align: center; color: #ff4757; margin-top: 0; font-family: 'Fira Code', monospace;">⚡ MODO DIOS ⚡</h4>
+
+                        <label for="inputCargarPedido" style="display: block; background: #555; color: white; padding: 10px; text-align: center; border-radius: 4px; cursor: pointer; margin-bottom: 10px; font-family: 'Fira Code', monospace; font-size: 14px;">
+                                 📥 1. Cargar .json del Cliente
+                        </label>
+                        <input type="file" id="inputCargarPedido" accept=".json" style="display: none;">
+
+                        <button id="btnDescargarAdmin" style="width: 100%; background: #d9534f; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-family: 'Fira Code', monospace; font-size: 14px;">
+                                🖨️ 2. Extraer PNG (Espejo)
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SECCIÓN DE CHECKOUT -->
+            <div class="checkout-section">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label style="color: white; font-weight: bold;">Cantidad:</label>
+                    <input type="number" id="orderQty" value="1" min="1" max="100" style="width: 60px; padding: 5px; text-align: center; background: #1e1e1e; color: white; border: 1px solid #555; border-radius: 4px;">
+                </div>
+                <div id="priceDisplay" class="price-badge" style="text-align: center; font-size: 18px; padding: 10px; margin-top: 10px; background: #569cd6; color: white; border-radius: 4px; font-weight: bold;">Total: $139 MXN</div>
+
+                <button id="btnGenerarPedido" class="btn-whatsapp" style="padding: 15px; font-size: 16px; margin-top: 10px; width: 100%; cursor: pointer; border: none; border-radius: 4px; background-color: #569cd6; color: white; font-weight: bold; transition: all 0.3s;">
+                    1. Guardar Diseño y Cotización
+                </button>
+
+                <a id="btnEnviarWhatsApp" style="display: none; padding: 15px; font-size: 16px; margin-top: 10px; width: 100%; cursor: pointer; border: none; border-radius: 4px; background-color: #25D366; color: white; font-weight: bold; text-align: center; text-decoration: none; box-sizing: border-box;">
+                    💬 2. Enviar archivos por WhatsApp
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

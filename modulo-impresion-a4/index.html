@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ctrl+Geek - Centro de Impresión y Acomodo A4</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            background-color: #1e1e1e; color: #d4d4d4;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            padding: 20px; margin: 0;
+        }
+        h2 { color: #569cd6; text-align: center; margin-bottom: 15px; font-weight: normal; }
+
+        .tabs-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .tab-btn {
+            background: #2d2d30; color: #aaa; border: 1px solid #444;
+            padding: 10px 20px; font-size: 14px; font-weight: bold;
+            border-radius: 6px 6px 0 0; cursor: pointer; transition: 0.2s;
+        }
+        .tab-btn.active { background: #007acc; color: white; border-color: #007acc; }
+
+        .options-bar {
+            display: flex; justify-content: center; align-items: center;
+            gap: 15px; margin-bottom: 20px; background: #252526;
+            padding: 10px; border-radius: 6px; border: 1px solid #333;
+        }
+        .options-bar label {
+            font-size: 14px; font-weight: bold; color: #569cd6; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .drop-zone {
+            border: 2px dashed #569cd6; border-radius: 8px;
+            padding: 35px; text-align: center; cursor: pointer;
+            background: #252526; margin-bottom: 20px; transition: 0.2s;
+        }
+        .drop-zone.dragover { background: #2d2d30; border-color: #4CAF50; color: #4CAF50; }
+
+        .preview-grid { display: flex; flex-direction: column; gap: 12px; align-items: center; margin-bottom: 20px; }
+
+        .btn-imprimir {
+            background: #28a745; color: white; border: none;
+            padding: 15px 30px; font-size: 16px; font-weight: bold;
+            border-radius: 4px; cursor: pointer; width: 100%; transition: 0.2s;
+        }
+        .btn-imprimir:disabled { background: #555; color: #888; cursor: not-allowed; }
+        .btn-imprimir:hover:not(:disabled) { background: #218838; }
+    </style>
+</head>
+<body>
+    <h2>🖨️ Centro de Impresión y Producción A4</h2>
+
+    <div class="tabs-container">
+        <button id="tabTazasBtn" class="tab-btn active">☕ Acomodo Tazas (3x1 A4)</button>
+        <button id="tabPlayerasBtn" class="tab-btn">👕 Playeras, Logos & Diseño Adaptativo</button>
+    </div>
+
+    <div class="options-bar">
+        <label>
+            <input type="checkbox" id="chkEspejo" checked> 🪞 Modo Espejo (Sublimación)
+        </label>
+    </div>
+
+    <!-- MÓDULO 1: TAZAS -->
+    <div id="moduloTazas" class="tab-content active">
+        <div id="dropZoneTazas" class="drop-zone">
+            <strong>Arrastra aquí los diseños para Tazas (PNG / JPG)</strong><br>
+            <span style="font-size: 13px; color: #888;">Empaque automático de 3 tazas por hoja A4 (20 x 9.4 cm)</span>
+        </div>
+        <div class="preview-grid" id="gridTazas"></div>
+        <button id="btnPdfTazas" class="btn-imprimir" disabled>🚀 Generar PDF Tazas (0 pzs)</button>
+    </div>
+
+    <!-- MÓDULO 2: PLAYERAS / LOGOS / ADAPTATIVO -->
+    <div id="moduloPlayeras" class="tab-content">
+        <div id="dropZonePlayeras" class="drop-zone">
+            <strong>Arrastra aquí los diseños (PNG / JPG)</strong><br>
+            <span style="font-size: 13px; color: #888;">Soporta Adulto (A4), Niño (16x22 cm), Logo (9x9 cm) y 📐 Medida Adaptativa</span>
+        </div>
+        <div class="preview-grid" id="gridPlayeras"></div>
+        <button id="btnPdfPlayeras" class="btn-imprimir" disabled>🚀 Generar PDF Textil / Adaptativo (0 pzs)</button>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

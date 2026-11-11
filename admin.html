@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración | Ctrl+Geek</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css?v=2.0">
+    <style>
+        body { background: #121212; color: #fff; font-family: 'Fira Code', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        .admin-nav { background: #1e1e1e; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #569cd6; }
+        .admin-nav h1 { margin: 0; font-size: 20px; }
+        .admin-nav h1 span { color: #569cd6; }
+        .btn-back { color: white; text-decoration: none; background: #333; padding: 8px 15px; border-radius: 4px; }
+        .admin-container { display: flex; flex: 1; overflow: hidden; }
+        .admin-sidebar { width: 250px; background: #1e1e1e; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .tab-btn { background: #333; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 4px; text-align: left; }
+        .tab-btn.active { background: #569cd6; font-weight: bold; }
+        .admin-main { flex: 1; padding: 30px; overflow-y: auto; }
+        .admin-section { display: none; }
+        .admin-section.active { display: block; }
+        .pricing-tier-card { background: #1e1e1e; border: 1px solid #444; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #aaa; font-size: 14px; }
+        .form-group input { width: 100%; padding: 10px; background: #2d2d2d; border: 1px solid #555; color: white; border-radius: 4px; }
+        .btn-save { background: #25D366; color: white; border: none; padding: 15px 30px; font-size: 16px; border-radius: 5px; cursor: pointer; margin-top: 20px; font-family: 'Fira Code', monospace; }
+
+        /* BLOQUEO DE SEGURIDAD */
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18, 18, 18, 0.98); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .login-box { background: #1e1e1e; padding: 40px; border-radius: 8px; text-align: center; border: 1px solid #444; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 300px; }
+        .login-box h2 { color: #569cd6; margin-top: 0; }
+        .login-box input { width: 90%; padding: 12px; margin: 20px 0; background: #2d2d2d; color: white; border: 1px solid #555; border-radius: 4px; font-family: 'Fira Code', monospace; }
+        .login-box button { background: #569cd6; color: white; border: none; padding: 12px 20px; width: 100%; border-radius: 4px; cursor: pointer; font-family: 'Fira Code', monospace; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- PANTALLA DE BLOQUEO -->
+    <div id="loginOverlay">
+        <div class="login-box">
+            <h2>🔒 Acceso Restringido</h2>
+            <p style="color: #aaa; font-size: 12px;">Ingresa la clave de producción</p>
+            <input type="password" id="adminPassword" placeholder="Contraseña...">
+            <button onclick="verificarAcceso()">Desbloquear Panel</button>
+            <p id="errorMsg" style="color: #ff4757; font-size: 12px; display: none; margin-top: 15px;">Contraseña incorrecta</p>
+        </div>
+    </div>
+
+    <nav class="admin-nav">
+        <h1>Ctrl<span>+</span>Geek 🖥️ <span>Panel de Control</span></h1>
+        <a href="index.html" class="btn-back">🪐 Ir a la Tienda</a>
+    </nav>
+
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <button class="tab-btn active" onclick="switchTab('precios')">💰 Matriz de Precios</button>
+            <button class="tab-btn" onclick="switchTab('catalogo')">📦 Catálogo Estacional</button>
+            <button class="tab-btn" onclick="switchTab('tazas')">📐 Gestor de Tamaños</button>
+            <button class="tab-btn" onclick="switchTab('fuentes')">🔤 Fuentes del Sistema</button>
+            <button class="tab-btn" onclick="abrirModoDios()" style="background-color: #d9534f; text-align: center; display: block; margin-top: 30px; color: white; width: 100%;">
+                🎨 Abrir Modo Dios
+            </button>
+        </aside>
+
+        <main class="admin-main">
+            <!-- PESTAÑA: PRECIOS -->
+            <section id="tab-precios" class="admin-section active">
+                <h2>Control de Precios y Escalabilidad</h2>
+                <p class="section-desc">Gestiona tus márgenes de ganancia. Los cambios aquí actualizan la tienda automáticamente.</p>
+
+                <div class="pricing-tier-card">
+                    <h3>📍 1. Mercado Local (Entregas personales)</h3>
+                    <p style="color: #aaa; font-size: 13px;">Sin gastos de envío. Para clientes de tu comunidad.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Unitario (Cliente trae diseño):</label>
+                            <input type="number" id="local_unitario" value="65">
+                        </div>
+                        <div class="form-group">
+                            <label>Mayoreo (Eventos/Fiestas):</label>
+                            <input type="number" id="local_mayoreo" value="55">
+                        </div>
+                        <div class="form-group">
+                            <label>Diseño Impreso (Trabajo manual):</label>
+                            <input type="number" id="local_diseno_impreso" value="115">
+                        </div>
+                        <div class="form-group">
+                            <label>Solo Diseño Digital (.png):</label>
+                            <input type="number" id="local_solo_digital" value="100">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pricing-tier-card" style="border-color: #569cd6;">
+                    <h3 style="color: #569cd6;">🌐 2. Mercado Web (Envíos Nacionales)</h3>
+                    <p style="color: #aaa; font-size: 13px;">Incluye costos de embalaje rígido y logística.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Unitario Web:</label>
+                            <input type="number" id="web_unitario" value="139">
+                        </div>
+                        <div class="form-group">
+                            <label>Mayoreo Web (Caja 12+):</label>
+                            <input type="number" id="web_mayoreo" value="99">
+                        </div>
+                        <div class="form-group">
+                            <label>Tarifa Extra Diseño Web:</label>
+                            <input type="number" id="web_diseno_extra" value="60">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-save" onclick="guardarPreciosEnJSON()">💾 Guardar Matriz en datos.json</button>
+            </section>
+        </main>
+    </div>
+
+    <!-- SCRIPT DE LÓGICA -->
+    <script>
+        const fs = require('fs');
+        const path = require('path');
+        const rutaDatos = path.join(__dirname, 'datos.json');
+
+        // SEGURIDAD: Verificar contraseña
+        function verificarAcceso() {
+            const pass = document.getElementById('adminPassword').value;
+            // AQUI PONES TU CONTRASEÑA REAL 👇
+            if (pass === 'Urlwolf081291') {
+                document.getElementById('loginOverlay').style.display = 'none';
+                cargarDatosActuales();
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+
+        // Permitir dar Enter en el campo de contraseña
+        document.getElementById('adminPassword').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') verificarAcceso();
+        });
+
+        // Función para inyectar la llave maestra y abrir el editor
+        function abrirModoDios() {
+            sessionStorage.setItem('ctrlgeek_admin_token', 'desbloqueado');
+            window.location.href = 'editor.html';
+        }
+
+        // Navegación de Pestañas
+        function switchTab(tabId) {
+            document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Leer datos.json
+        function cargarDatosActuales() {
+            if (fs.existsSync(rutaDatos)) {
+                try {
+                    const contenido = fs.readFileSync(rutaDatos, 'utf-8');
+                    const datos = JSON.parse(contenido);
+
+                    if(datos.configuracion) {
+                        if(datos.configuracion.preciosLocal) {
+                            document.getElementById('local_unitario').value = datos.configuracion.preciosLocal.unitario || 65;
+                            document.getElementById('local_mayoreo').value = datos.configuracion.preciosLocal.mayoreo || 55;
+                            document.getElementById('local_diseno_impreso').value = datos.configuracion.preciosLocal.disenoImpreso || 115;
+                            document.getElementById('local_solo_digital').value = datos.configuracion.preciosLocal.soloDisenoDigital || 100;
+                        }
+                        if(datos.configuracion.preciosWeb) {
+                            document.getElementById('web_unitario').value = datos.configuracion.preciosWeb.unitario || 139;
+                            document.getElementById('web_mayoreo').value = datos.configuracion.preciosWeb.mayoreo || 99;
+                            document.getElementById('web_diseno_extra').value = datos.configuracion.preciosWeb.disenoExtra || 60;
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error leyendo datos.json:", error);
+                }
+            }
+        }
+
+        function guardarPreciosEnJSON() {
+            let datos = { configuracion: { preciosLocal: {}, preciosWeb: {} }, catalogo: [] };
+
+            if (fs.existsSync(rutaDatos)) {
+                try { datos = JSON.parse(fs.readFileSync(rutaDatos, 'utf-8')); } catch(e) {}
+            }
+
+            datos.configuracion.preciosLocal = {
+                unitario: parseInt(document.getElementById('local_unitario').value),
+                mayoreo: parseInt(document.getElementById('local_mayoreo').value),
+                cantidadMinimaMayoreo: 12,
+                disenoImpreso: parseInt(document.getElementById('local_diseno_impreso').value),
+                soloDisenoDigital: parseInt(document.getElementById('local_solo_digital').value)
+            };
+
+            datos.configuracion.preciosWeb = {
+                unitario: parseInt(document.getElementById('web_unitario').value),
+                mayoreo: parseInt(document.getElementById('web_mayoreo').value),
+                cantidadMinimaMayoreo: 12,
+                disenoExtra: parseInt(document.getElementById('web_diseno_extra').value)
+            };
+
+            fs.writeFileSync(rutaDatos, JSON.stringify(datos, null, 2), 'utf-8');
+            alert("✅ ¡Matriz de precios guardada en datos.json!");
+        }
+    </script>
+</body>
+</html>
