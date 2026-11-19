@@ -1,0 +1,106 @@
+{
+  "taza_11oz": {
+    "nombre": "Taza 11 oz (Clásica / Mágica)",
+    "hoja_tipo": "A4",
+    "ancho_cm": 20.0,
+    "alto_cm": 9.5,
+    "espejo_default": true,
+    "guias_corte": true
+  },
+  "taza_9oz": {
+    "nombre": "Taza 9 oz (Resistencia n.1)",
+    "hoja_tipo": "A4",
+    "ancho_cm": 18.5,
+    "alto_cm": 8.2,
+    "espejo_default": true,
+    "guias_corte": true
+  },
+  "taza_15oz_blanca": {
+    "nombre": "Taza 15 oz Blanca",
+    "hoja_tipo": "A4",
+    "ancho_cm": 20.5,
+    "alto_cm": 11.5,
+    "espejo_default": true,
+    "guias_corte": true
+  },
+  "taza_15oz_ventana_negra": {
+    "nombre": "Taza 15 oz Ventana Negra",
+    "hoja_tipo": "A4",
+    "ancho_cm": 19.5,
+    "alto_cm": 10.5,
+    "espejo_default": true,
+    "guias_corte": true
+  },
+  "taza_viajera_16oz": {
+    "nombre": "Taza Viajera 16 oz",
+    "hoja_tipo": "A4",
+    "ancho_cm": 20.0,
+    "alto_cm": 14.0,
+    "espejo_default": true,
+    "guias_corte": true
+  },
+  "cilindro_llavero_600ml": {
+    "nombre": "Cilindro Llavero Aluminio 600 ml",
+    "hoja_tipo": "A4",
+    "ancho_cm": 20.0,
+    "alto_cm": 14.0,
+    "espejo_default": true,
+    "guias_corte": true
+  },
+  "vaso_vinero_300ml": {
+    "nombre": "Vaso Vinero 300 ml (Vinera)",
+    "hoja_tipo": "A4",
+    "ancho_cm": 20.0,
+    "alto_cm": 7.5,
+    "espejo_default": true,
+    "guias_corte": true
+  },
+  "gorra": {
+    "nombre": "Gorra Trucker (Frente)",
+    "hoja_tipo": "A4",
+    "ancho_cm": 12.0,
+    "alto_cm": 6.5,
+    "espejo_default": true,
+    "guias_corte": true
+  },
+  "playera_nino": {
+    "nombre": "Playera Niño",
+    "hoja_tipo": "A4",
+    "ancho_cm": 18.0,
+    "alto_cm": 24.0,
+    "espejo_default": true,
+    "guias_corte": false
+  },
+  "playera_adulto": {
+    "nombre": "Playera Adulto (Sublimación A4)",
+    "hoja_tipo": "A4",
+    "ancho_cm": 20.5,
+    "alto_cm": 29.0,
+    "espejo_default": true,
+    "guias_corte": false
+  },
+  "cojin": {
+    "nombre": "Cojín (Tope Plancha 29×38 cm)",
+    "hoja_tipo": "PLANCHA",
+    "ancho_cm": 28.0,
+    "alto_cm": 37.0,
+    "espejo_default": true,
+    "guias_corte": false
+  },
+  "plato_8": {
+    "nombre": "Plato Cerámica 8\" (20 cm)",
+    "hoja_tipo": "A4",
+    "ancho_cm": 13.0,
+    "alto_cm": 13.0,
+    "espejo_default": true,
+    "guias_corte": true
+  },
+  "dtf_metro": {
+    "nombre": "🧵 Lienzo DTF Textil (1 Metro: 58 × 100 cm)",
+    "hoja_tipo": "DTF",
+    "ancho_cm": 27.0,
+    "alto_cm": 32.0,
+    "espejo_default": false,
+    "guias_corte": true
+  }
+}
