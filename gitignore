@@ -1,8 +1,9 @@
-.venv/
-venv/
+__pycache__/
+*.pyc
+*.spec
 build/
 dist/
-*.exe
-__pycache__/
-.idea/
-Archivos Tarjetas/
+.venv/
+config_logo.json
+test_image.png
+prueba.py
