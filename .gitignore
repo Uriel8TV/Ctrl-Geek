@@ -1,6 +1,9 @@
-
-node_modules/
-dist/
+__pycache__/
+*.pyc
+*.spec
 build/
-win-unpacked/
-*.exe
+dist/
+.venv/
+config_logo.json
+test_image.png
+prueba.py
